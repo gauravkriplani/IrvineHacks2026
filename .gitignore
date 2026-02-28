@@ -15,6 +15,7 @@ yarn-error.log*
 
 # Generated output
 agent-contract.json
+aom-output/
 
 # Optional build artifacts
 dist/
