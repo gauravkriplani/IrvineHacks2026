@@ -1,0 +1,27 @@
+{
+  "name": "irvinehacks",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gauravkriplani/IrvineHacks2026.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/gauravkriplani/IrvineHacks2026/issues"
+  },
+  "homepage": "https://github.com/gauravkriplani/IrvineHacks2026#readme",
+  "dependencies": {
+    "ajv": "^8.18.0",
+    "fs-extra": "^11.3.3",
+    "glob": "^13.0.6",
+    "openai": "^6.25.0"
+  }
+}
