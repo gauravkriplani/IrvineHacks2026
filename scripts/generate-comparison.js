@@ -6,7 +6,7 @@ const AOM_JSON_PATH = path.join(process.cwd(), 'aom-output', 'agent-surface.json
 const OUTPUT_FILE = path.join(process.cwd(), 'automation-comparison.txt');
 
 async function generateComparison() {
-    console.log('Fetching raw HTML from local Amazon dummy (http://localhost:5000) ...');
+    console.log('Fetching raw HTML from local Amazon dummy (http://localhost:5173) ...');
 
     // 1. Get HTML from local dummy amazon
     const browser = await puppet.launch({ headless: 'new' });
@@ -14,7 +14,7 @@ async function generateComparison() {
 
     let htmlContent = '';
     try {
-        await page.goto('http://localhost:5000', { waitUntil: 'networkidle0', timeout: 15000 });
+        await page.goto('http://localhost:5173', { waitUntil: 'networkidle0', timeout: 15000 });
         htmlContent = await page.evaluate(() => document.documentElement.outerHTML);
     } catch (e) {
         console.error('Failed to load local Amazon site:', e.message);
