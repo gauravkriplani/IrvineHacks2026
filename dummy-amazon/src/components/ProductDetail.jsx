@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useCart } from '../context/CartContext';
+import { AOMLink, AOMAction, AOMInput } from '../../../aom-wrappers';
 import './ProductDetail.css';
 
 const BackIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6" /></svg>;
@@ -95,9 +96,11 @@ export default function ProductDetail({ product, onBack, onViewChange, hasPurcha
 
     return (
         <div className="product-detail">
-            <button className="pd-back" onClick={onBack}>
-                <BackIcon /> Back to results
-            </button>
+            <AOMLink id="product_detail.back_to_results" description="Go back to previous product list" destination="Results">
+                <button className="pd-back" onClick={onBack}>
+                    <BackIcon /> Back to results
+                </button>
+            </AOMLink>
 
             <div className="pd-body">
                 {/* Left: Image */}
@@ -140,8 +143,12 @@ export default function ProductDetail({ product, onBack, onViewChange, hasPurcha
                     )}
 
                     <div className="pd-tabs">
-                        <button className={`pd-tab ${tab === 'description' ? 'pd-tab--active' : ''}`} onClick={() => setTab('description')}>Description</button>
-                        <button className={`pd-tab ${tab === 'features' ? 'pd-tab--active' : ''}`} onClick={() => setTab('features')}>Features</button>
+                        <AOMAction id="product_detail.tab_description" description="View product description tab">
+                            <button className={`pd-tab ${tab === 'description' ? 'pd-tab--active' : ''}`} onClick={() => setTab('description')}>Description</button>
+                        </AOMAction>
+                        <AOMAction id="product_detail.tab_features" description="View product features tab">
+                            <button className={`pd-tab ${tab === 'features' ? 'pd-tab--active' : ''}`} onClick={() => setTab('features')}>Features</button>
+                        </AOMAction>
                     </div>
 
                     {tab === 'description' && (
@@ -173,18 +180,24 @@ export default function ProductDetail({ product, onBack, onViewChange, hasPurcha
 
                     <div className="pd-qty-selector">
                         <label style={{ fontSize: 13 }}>Quantity:</label>
-                        <select className="pd-qty-select" value={qty} onChange={e => setQty(Number(e.target.value))}>
-                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => <option key={n} value={n}>{n}</option>)}
-                        </select>
+                        <AOMInput id={`product.${product.id}.buy_quantity`} description={`Quantity of ${product.name} to buy`} inputType="select">
+                            <select className="pd-qty-select" value={qty} onChange={e => setQty(Number(e.target.value))}>
+                                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => <option key={n} value={n}>{n}</option>)}
+                            </select>
+                        </AOMInput>
                     </div>
 
-                    <button
-                        className={`pd-add-cart-btn ${cartFeedback ? 'pd-add-cart-btn--added' : ''}`}
-                        onClick={handleAddToCart}
-                    >
-                        {cartFeedback ? '✓ Added to Cart!' : 'Add to Cart'}
-                    </button>
-                    <button className="pd-buy-now-btn" onClick={handleBuyNow}>Buy Now</button>
+                    <AOMAction id={`product.${product.id}.add_to_cart_detail`} description={`Add ${qty} ${product.name} to cart`}>
+                        <button
+                            className={`pd-add-cart-btn ${cartFeedback ? 'pd-add-cart-btn--added' : ''}`}
+                            onClick={handleAddToCart}
+                        >
+                            {cartFeedback ? '✓ Added to Cart!' : 'Add to Cart'}
+                        </button>
+                    </AOMAction>
+                    <AOMAction id={`product.${product.id}.buy_now`} description={`Buy ${qty} ${product.name} immediately`} safety={0.8}>
+                        <button className="pd-buy-now-btn" onClick={handleBuyNow}>Buy Now</button>
+                    </AOMAction>
 
                     <div className="pd-buy-details">
                         <p>Ships from <strong>Amazon</strong></p>
@@ -199,9 +212,11 @@ export default function ProductDetail({ product, onBack, onViewChange, hasPurcha
                 <div className="pd-reviews__header-row">
                     <h2 className="pd-reviews__title">Customer Reviews</h2>
                     {hasPurchased && !reviewSubmitted && (
-                        <button className="pd-write-review-btn" onClick={() => setShowReviewForm(v => !v)}>
-                            {showReviewForm ? 'Cancel' : '✎ Write a review'}
-                        </button>
+                        <AOMAction id={`product.${product.id}.write_review`} description="Write a customer review">
+                            <button className="pd-write-review-btn" onClick={() => setShowReviewForm(v => !v)}>
+                                {showReviewForm ? 'Cancel' : '✎ Write a review'}
+                            </button>
+                        </AOMAction>
                     )}
                     {reviewSubmitted && (
                         <span className="pd-review-submitted">✓ Your review was posted!</span>
@@ -215,28 +230,39 @@ export default function ProductDetail({ product, onBack, onViewChange, hasPurcha
                             <label>Your rating:</label>
                             <div className="pd-review-form__stars">
                                 {[1, 2, 3, 4, 5].map(n => (
-                                    <button
+                                    <AOMAction
                                         key={n}
-                                        className={`pd-star-btn ${n <= newReview.rating ? 'pd-star-btn--on' : ''}`}
-                                        onClick={() => setNewReview(r => ({ ...r, rating: n }))}
-                                    >★</button>
+                                        id={`product.${product.id}.review_rating_${n}`}
+                                        description={`Set review rating to ${n} stars`}
+                                    >
+                                        <button
+                                            className={`pd-star-btn ${n <= newReview.rating ? 'pd-star-btn--on' : ''}`}
+                                            onClick={() => setNewReview(r => ({ ...r, rating: n }))}
+                                        >★</button>
+                                    </AOMAction>
                                 ))}
                             </div>
                         </div>
-                        <input
-                            className="pd-review-form__input"
-                            placeholder="Review title"
-                            value={newReview.title}
-                            onChange={e => setNewReview(r => ({ ...r, title: e.target.value }))}
-                        />
-                        <textarea
-                            className="pd-review-form__textarea"
-                            placeholder="Share your experience with this product..."
-                            value={newReview.body}
-                            onChange={e => setNewReview(r => ({ ...r, body: e.target.value }))}
-                            rows={4}
-                        />
-                        <button className="pd-review-form__submit" onClick={handleSubmitReview}>Submit Review</button>
+                        <AOMInput id={`product.${product.id}.review_title`} description="Review title" inputType="text">
+                            <input
+                                className="pd-review-form__input"
+                                placeholder="Review title"
+                                value={newReview.title}
+                                onChange={e => setNewReview(r => ({ ...r, title: e.target.value }))}
+                            />
+                        </AOMInput>
+                        <AOMInput id={`product.${product.id}.review_body`} description="Review body text" inputType="textarea">
+                            <textarea
+                                className="pd-review-form__textarea"
+                                placeholder="Share your experience with this product..."
+                                value={newReview.body}
+                                onChange={e => setNewReview(r => ({ ...r, body: e.target.value }))}
+                                rows={4}
+                            />
+                        </AOMInput>
+                        <AOMAction id={`product.${product.id}.submit_review`} description="Submit the customer review">
+                            <button className="pd-review-form__submit" onClick={handleSubmitReview}>Submit Review</button>
+                        </AOMAction>
                     </div>
                 )}
 
@@ -280,20 +306,24 @@ export default function ProductDetail({ product, onBack, onViewChange, hasPurcha
                             <p className="pd-review__body">{r.body}</p>
                             <div className="pd-review__helpful">
                                 <span style={{ fontSize: 13, color: '#555' }}>Helpful?</span>
-                                <button
-                                    className={`pd-review__helpful-btn ${myVotes[i] === 'yes' ? 'pd-review__helpful-btn--voted' : ''}`}
-                                    onClick={() => handleVote(i, 'yes')}
-                                    title="Yes, this was helpful"
-                                >
-                                    👍 Yes ({r.helpfulYes})
-                                </button>
-                                <button
-                                    className={`pd-review__helpful-btn ${myVotes[i] === 'no' ? 'pd-review__helpful-btn--voted' : ''}`}
-                                    onClick={() => handleVote(i, 'no')}
-                                    title="No, this was not helpful"
-                                >
-                                    👎 No ({r.helpfulNo})
-                                </button>
+                                <AOMAction id={`product.${product.id}.review_${i}.vote_yes`} description={`Vote YES helpful for review by ${r.name}`}>
+                                    <button
+                                        className={`pd-review__helpful-btn ${myVotes[i] === 'yes' ? 'pd-review__helpful-btn--voted' : ''}`}
+                                        onClick={() => handleVote(i, 'yes')}
+                                        title="Yes, this was helpful"
+                                    >
+                                        👍 Yes ({r.helpfulYes})
+                                    </button>
+                                </AOMAction>
+                                <AOMAction id={`product.${product.id}.review_${i}.vote_no`} description={`Vote NO helpful for review by ${r.name}`}>
+                                    <button
+                                        className={`pd-review__helpful-btn ${myVotes[i] === 'no' ? 'pd-review__helpful-btn--voted' : ''}`}
+                                        onClick={() => handleVote(i, 'no')}
+                                        title="No, this was not helpful"
+                                    >
+                                        👎 No ({r.helpfulNo})
+                                    </button>
+                                </AOMAction>
                             </div>
                         </div>
                     ))}

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useCart } from '../context/CartContext';
+import { AOMLink, AOMAction, AOMInput } from '../../../aom-wrappers';
 import './Checkout.css';
 
 const STEPS = ['Shipping', 'Payment', 'Review', 'Confirmation'];
@@ -47,7 +48,9 @@ export default function Checkout({ onBack, deliveryAddress, onAddressChange, onO
                             <strong>{addr.fullName}, {addr.city}, {addr.state}</strong>
                         </div>
                     </div>
-                    <button className="checkout-confirm__home" onClick={onBack}>Continue Shopping</button>
+                    <AOMLink id="checkout.continue_shopping" description="Return to Home after placing order" destination="Home">
+                        <button className="checkout-confirm__home" onClick={onBack}>Continue Shopping</button>
+                    </AOMLink>
                 </div>
             </div>
         );
@@ -80,9 +83,11 @@ export default function Checkout({ onBack, deliveryAddress, onAddressChange, onO
                                         <p>{addr.city}, {addr.state} {addr.zip}</p>
                                         <p style={{ color: '#555', fontSize: 13 }}>{addr.phone}</p>
                                     </div>
-                                    <button className="checkout-edit-link" onClick={onAddressChange}>
-                                        Change address
-                                    </button>
+                                    <AOMAction id="checkout.shipping.change_address" description="Change shipping address">
+                                        <button className="checkout-edit-link" onClick={onAddressChange}>
+                                            Change address
+                                        </button>
+                                    </AOMAction>
                                 </div>
                                 <div className="checkout-field checkout-field--full">
                                     <h3 style={{ fontSize: 15, marginBottom: 8 }}>Delivery Options</h3>
@@ -91,14 +96,18 @@ export default function Checkout({ onBack, deliveryAddress, onAddressChange, onO
                                         { label: 'Standard Delivery (3-5 days)', badge: 'FREE', selected: false },
                                         { label: 'Expedited Delivery (2 days) - $7.99', badge: null, selected: false },
                                     ].map(opt => (
-                                        <label key={opt.label} className="checkout-delivery-opt">
-                                            <input type="radio" name="delivery" defaultChecked={opt.selected} />
-                                            <span>{opt.label}</span>
-                                            {opt.badge && <span className={opt.badge === 'prime' ? 'prime-badge' : 'checkout-free-badge'}>{opt.badge}</span>}
-                                        </label>
+                                        <AOMInput key={opt.label} id={`checkout.shipping.delivery_speed.${opt.label.replace(/[^a-zA-Z]/g, '').toLowerCase()}`} description={`Select delivery option: ${opt.label}`} inputType="radio">
+                                            <label className="checkout-delivery-opt">
+                                                <input type="radio" name="delivery" defaultChecked={opt.selected} />
+                                                <span>{opt.label}</span>
+                                                {opt.badge && <span className={opt.badge === 'prime' ? 'prime-badge' : 'checkout-free-badge'}>{opt.badge}</span>}
+                                            </label>
+                                        </AOMInput>
                                     ))}
                                 </div>
-                                <button className="checkout-next-btn" onClick={() => setStep(1)}>Continue to Payment</button>
+                                <AOMAction id="checkout.shipping.continue_to_payment" description="Proceed to payment step">
+                                    <button className="checkout-next-btn" onClick={() => setStep(1)}>Continue to Payment</button>
+                                </AOMAction>
                             </div>
                         </div>
                     )}
@@ -114,10 +123,12 @@ export default function Checkout({ onBack, deliveryAddress, onAddressChange, onO
                                         { id: 'amazon', label: 'Amazon Pay', selected: false },
                                         { id: 'gift', label: '🎁 Gift Card', selected: false },
                                     ].map(m => (
-                                        <label key={m.id} className={`checkout-pay-method ${m.selected ? 'checkout-pay-method--selected' : ''}`}>
-                                            <input type="radio" name="payMethod" defaultChecked={m.selected} />
-                                            {m.label}
-                                        </label>
+                                        <AOMInput key={m.id} id={`checkout.payment.method.${m.id}`} description={`Select payment method: ${m.label}`} inputType="radio">
+                                            <label className={`checkout-pay-method ${m.selected ? 'checkout-pay-method--selected' : ''}`}>
+                                                <input type="radio" name="payMethod" defaultChecked={m.selected} />
+                                                {m.label}
+                                            </label>
+                                        </AOMInput>
                                     ))}
                                 </div>
                                 {[
@@ -128,17 +139,23 @@ export default function Checkout({ onBack, deliveryAddress, onAddressChange, onO
                                 ].map(([key, label]) => (
                                     <div key={key} className="checkout-field">
                                         <label className="checkout-label">{label}</label>
-                                        <input
-                                            className="checkout-input"
-                                            value={pay[key]}
-                                            onChange={e => setPay(p => ({ ...p, [key]: e.target.value }))}
-                                            type={key === 'cvv' ? 'password' : 'text'}
-                                        />
+                                        <AOMInput id={`checkout.payment.${key}`} description={`Payment logic: ${label}`} inputType={key === 'cvv' ? 'password' : 'text'}>
+                                            <input
+                                                className="checkout-input"
+                                                value={pay[key]}
+                                                onChange={e => setPay(p => ({ ...p, [key]: e.target.value }))}
+                                                type={key === 'cvv' ? 'password' : 'text'}
+                                            />
+                                        </AOMInput>
                                     </div>
                                 ))}
                                 <div style={{ display: 'flex', gap: 12 }}>
-                                    <button className="checkout-back-btn" onClick={() => setStep(0)}>Back</button>
-                                    <button className="checkout-next-btn" onClick={() => setStep(2)}>Review Order</button>
+                                    <AOMAction id="checkout.payment.back_to_shipping" description="Go back to shipping step">
+                                        <button className="checkout-back-btn" onClick={() => setStep(0)}>Back</button>
+                                    </AOMAction>
+                                    <AOMAction id="checkout.payment.review_order" description="Proceed to review order step">
+                                        <button className="checkout-next-btn" onClick={() => setStep(2)}>Review Order</button>
+                                    </AOMAction>
                                 </div>
                             </div>
                         </div>
@@ -153,7 +170,9 @@ export default function Checkout({ onBack, deliveryAddress, onAddressChange, onO
                                 <p>{addr.fullName}</p>
                                 <p>{addr.address}</p>
                                 <p>{addr.city}, {addr.state} {addr.zip}</p>
-                                <button className="checkout-edit-link" onClick={() => setStep(0)}>Edit</button>
+                                <AOMAction id="checkout.review.edit_shipping" description="Edit shipping address from review step">
+                                    <button className="checkout-edit-link" onClick={() => setStep(0)}>Edit</button>
+                                </AOMAction>
                             </div>
                             <div className="checkout-review-items">
                                 {cart.map(item => (
@@ -169,8 +188,12 @@ export default function Checkout({ onBack, deliveryAddress, onAddressChange, onO
                                 ))}
                             </div>
                             <div style={{ display: 'flex', gap: 12, marginTop: 20 }}>
-                                <button className="checkout-back-btn" onClick={() => setStep(1)}>Back</button>
-                                <button className="checkout-place-btn" onClick={handlePlaceOrder}>Place Your Order</button>
+                                <AOMAction id="checkout.review.back_to_payment" description="Go back to payment step from review">
+                                    <button className="checkout-back-btn" onClick={() => setStep(1)}>Back</button>
+                                </AOMAction>
+                                <AOMAction id="checkout.review.place_order_main" description="Finalize checkout and place the order" safety={0.9}>
+                                    <button className="checkout-place-btn" onClick={handlePlaceOrder}>Place Your Order</button>
+                                </AOMAction>
                             </div>
                         </div>
                     )}
@@ -180,7 +203,9 @@ export default function Checkout({ onBack, deliveryAddress, onAddressChange, onO
                 <div className="checkout-summary">
                     <div className="checkout-summary__card">
                         {step === 2 && (
-                            <button className="checkout-place-btn" onClick={handlePlaceOrder} style={{ marginBottom: 16 }}>Place Your Order</button>
+                            <AOMAction id="checkout.review.place_order_sidebar" description="Finalize checkout and place the order from summary sidebar" safety={0.9}>
+                                <button className="checkout-place-btn" onClick={handlePlaceOrder} style={{ marginBottom: 16 }}>Place Your Order</button>
+                            </AOMAction>
                         )}
                         <p style={{ fontSize: 12, color: '#555', marginBottom: 12 }}>
                             By placing your order, you agree to Amazon's <span style={{ color: '#0066c0' }}>privacy notice</span> and <span style={{ color: '#0066c0' }}>conditions of use</span>.

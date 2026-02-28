@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useCart } from '../context/CartContext';
+import { AOMLink, AOMAction, AOMInput } from '../../../aom-wrappers';
 import './OrdersPage.css';
 
 const SAMPLE_ORDERS = [
@@ -72,11 +73,15 @@ function OrderCard({ order, onBuyAgain, onViewItem }) {
                 <div className="order-card__id-block">
                     <p className="order-card__meta-label">ORDER # {order.id}</p>
                     <div className="order-card__links">
-                        <button className="order-link" onClick={() => setExpanded(v => !v)}>
-                            {expanded ? 'Hide details' : 'View order details'}
-                        </button>
+                        <AOMAction id={`order.${order.id}.toggle_details`} description={`Toggle visibility of details for order ${order.id}`}>
+                            <button className="order-link" onClick={() => setExpanded(v => !v)}>
+                                {expanded ? 'Hide details' : 'View order details'}
+                            </button>
+                        </AOMAction>
                         <span> | </span>
-                        <button className="order-link" onClick={() => setShowTracking(v => !v)}>Track package</button>
+                        <AOMAction id={`order.${order.id}.toggle_tracking`} description={`Toggle package tracking for order ${order.id}`}>
+                            <button className="order-link" onClick={() => setShowTracking(v => !v)}>Track package</button>
+                        </AOMAction>
                     </div>
                 </div>
             </div>
@@ -124,25 +129,31 @@ function OrderCard({ order, onBuyAgain, onViewItem }) {
                     };
                     return (
                         <div key={i} className="order-card__item">
-                            <img
-                                src={item.image}
-                                alt={item.name}
-                                className="order-card__item-img"
-                                onClick={handleViewItem}
-                                style={{ cursor: 'pointer' }}
-                                title="View product"
-                            />
-                            <div className="order-card__item-info">
-                                <p
-                                    className="order-card__item-name"
+                            <AOMLink id={`order.${order.id}.item_${i}.view_details_img`} description={`View product details for ${item.name}`} destination="Product Detail">
+                                <img
+                                    src={item.image}
+                                    alt={item.name}
+                                    className="order-card__item-img"
                                     onClick={handleViewItem}
-                                    style={{ cursor: 'pointer', color: '#0066c0' }}
-                                >
-                                    {item.name}
-                                </p>
+                                    style={{ cursor: 'pointer' }}
+                                    title="View product"
+                                />
+                            </AOMLink>
+                            <div className="order-card__item-info">
+                                <AOMLink id={`order.${order.id}.item_${i}.view_details_text`} description={`View product details for ${item.name}`} destination="Product Detail">
+                                    <p
+                                        className="order-card__item-name"
+                                        onClick={handleViewItem}
+                                        style={{ cursor: 'pointer', color: '#0066c0' }}
+                                    >
+                                        {item.name}
+                                    </p>
+                                </AOMLink>
                                 <p className="order-card__item-qty">Qty: {item.qty}</p>
                                 <div className="order-card__item-actions">
-                                    <button className="order-btn order-btn--primary" onClick={() => onBuyAgain(item)}>Buy it again</button>
+                                    <AOMAction id={`order.${order.id}.item_${i}.buy_again`} description={`Buy ${item.name} again`}>
+                                        <button className="order-btn order-btn--primary" onClick={() => onBuyAgain(item)}>Buy it again</button>
+                                    </AOMAction>
                                 </div>
                             </div>
                             <div className="order-card__item-price">${(item.price * item.qty).toFixed(2)}</div>
@@ -195,12 +206,14 @@ export default function OrdersPage({ onViewChange, recentOrders = [] }) {
                 </div>
                 <div className="orders-filter">
                     <label>Filter by: </label>
-                    <select className="orders-filter__select" value={filter} onChange={e => setFilter(e.target.value)}>
-                        <option value="last30">Last 30 days</option>
-                        <option value="last3months">Last 3 months</option>
-                        <option value="2025">2025</option>
-                        <option value="2026">2026</option>
-                    </select>
+                    <AOMInput id="orders.filter_timeframe" description="Filter orders by timeframe" inputType="select">
+                        <select className="orders-filter__select" value={filter} onChange={e => setFilter(e.target.value)}>
+                            <option value="last30">Last 30 days</option>
+                            <option value="last3months">Last 3 months</option>
+                            <option value="2025">2025</option>
+                            <option value="2026">2026</option>
+                        </select>
+                    </AOMInput>
                 </div>
             </div>
 

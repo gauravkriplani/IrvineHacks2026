@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
+import { AOMLink, AOMAction, AOMInput } from '../../../aom-wrappers';
 import './Header.css';
 
 const CartIcon = () => (
@@ -45,19 +46,23 @@ export default function Header({ searchQuery, onSearchChange, onCategoryFilter, 
         <header className="amz-header">
             <div className="amz-header__top">
                 {/* Logo */}
-                <div className="amz-logo" onClick={() => { onViewChange('home'); onSearchChange(''); }}>
-                    <span className="amz-logo__text">amazon</span>
-                    <span className="amz-logo__tld">.com</span>
-                </div>
+                <AOMLink id="nav.logo_home" description="Navigate to Amazon Home" destination="Home">
+                    <div className="amz-logo" onClick={() => { onViewChange('home'); onSearchChange(''); }}>
+                        <span className="amz-logo__text">amazon</span>
+                        <span className="amz-logo__tld">.com</span>
+                    </div>
+                </AOMLink>
 
                 {/* Deliver to — click to change address */}
-                <div className="amz-deliver" onClick={onAddressClick} title="Change delivery address">
-                    <LocationIcon />
-                    <div>
-                        <div className="amz-deliver__label">Deliver to</div>
-                        <div className="amz-deliver__loc">{deliveryAddress?.city || 'San Francisco'} {deliveryAddress?.zip || '94105'}</div>
+                <AOMAction id="header.change_address" description="Change delivery address">
+                    <div className="amz-deliver" onClick={onAddressClick} title="Change delivery address">
+                        <LocationIcon />
+                        <div>
+                            <div className="amz-deliver__label">Deliver to</div>
+                            <div className="amz-deliver__loc">{deliveryAddress?.city || 'San Francisco'} {deliveryAddress?.zip || '94105'}</div>
+                        </div>
                     </div>
-                </div>
+                </AOMAction>
 
                 {/* Search bar */}
                 <form className="amz-search" onSubmit={handleSearch}>
@@ -68,37 +73,47 @@ export default function Header({ searchQuery, onSearchChange, onCategoryFilter, 
                         {showCatDropdown && (
                             <ul className="amz-search__cat-dropdown">
                                 {CATEGORIES.map(c => (
-                                    <li key={c} onClick={() => { setSearchCat(c); setShowCatDropdown(false); }}>
-                                        {c}
-                                    </li>
+                                    <AOMAction key={c} id={`header.category_select.${c.replace(/[^a-zA-Z]/g, '').toLowerCase()}`} description={`Select search category: ${c}`}>
+                                        <li onClick={() => { setSearchCat(c); setShowCatDropdown(false); }}>
+                                            {c}
+                                        </li>
+                                    </AOMAction>
                                 ))}
                             </ul>
                         )}
                     </div>
-                    <input
-                        className="amz-search__input"
-                        placeholder="Search Amazon"
-                        value={query}
-                        onChange={e => setQuery(e.target.value)}
-                    />
-                    <button type="submit" className="amz-search__btn">
-                        <SearchIcon />
-                    </button>
+                    <AOMInput id="header.search_input" description="Search query for products" inputType="text">
+                        <input
+                            className="amz-search__input"
+                            placeholder="Search Amazon"
+                            value={query}
+                            onChange={e => setQuery(e.target.value)}
+                        />
+                    </AOMInput>
+                    <AOMAction id="header.submit_search" description="Submit product search">
+                        <button type="submit" className="amz-search__btn">
+                            <SearchIcon />
+                        </button>
+                    </AOMAction>
                 </form>
 
                 {/* Right side */}
                 <div className="amz-header__right">
-                    <div className="amz-header__returns" onClick={() => onViewChange('orders')} title="View your orders">
-                        <div className="amz-header__account-label">Orders</div>
-                        <div className="amz-header__account-main">& History</div>
-                    </div>
-                    <button className="amz-cart-btn" onClick={() => onViewChange('cart')}>
-                        <div className="amz-cart-btn__icon">
-                            <CartIcon />
-                            {cartCount > 0 && <span className="amz-cart-btn__count">{cartCount}</span>}
+                    <AOMLink id="nav.orders" description="View orders and returns history" destination="Orders">
+                        <div className="amz-header__returns" onClick={() => onViewChange('orders')} title="View your orders">
+                            <div className="amz-header__account-label">Orders</div>
+                            <div className="amz-header__account-main">& History</div>
                         </div>
-                        <span className="amz-cart-btn__label">Cart</span>
-                    </button>
+                    </AOMLink>
+                    <AOMLink id="nav.cart" description="View shopping cart" destination="Cart">
+                        <button type="button" className="amz-cart-btn" onClick={() => onViewChange('cart')}>
+                            <div className="amz-cart-btn__icon">
+                                <CartIcon />
+                                {cartCount > 0 && <span className="amz-cart-btn__count">{cartCount}</span>}
+                            </div>
+                            <span className="amz-cart-btn__label">Cart</span>
+                        </button>
+                    </AOMLink>
                 </div>
 
             </div>

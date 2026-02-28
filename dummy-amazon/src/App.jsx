@@ -9,6 +9,7 @@ import CartPage from './components/CartPage';
 import Checkout from './components/Checkout';
 import OrdersPage from './components/OrdersPage';
 import AddressModal from './components/AddressModal';
+import AgentDashboard from './components/AgentDashboard/AgentDashboard';
 import './App.css';
 
 const SORT_OPTIONS = [
@@ -207,6 +208,7 @@ function App() {
           )}
         </div>
 
+        <AgentDashboard />
       </div>
     </CartProvider>
   );

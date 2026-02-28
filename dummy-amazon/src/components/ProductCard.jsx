@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useCart } from '../context/CartContext';
+import { AOMLink, AOMAction } from '../../../aom-wrappers';
 import './ProductCard.css';
 
 function Stars({ rating }) {
@@ -31,55 +32,61 @@ export default function ProductCard({ product, onProductClick }) {
         : 0;
 
     return (
-        <div className="product-card" onClick={() => onProductClick(product)}>
-            {/* Badges */}
-            <div className="product-card__badges">
-                {product.badge && <span className="product-badge">{product.badge}</span>}
-                {discount > 0 && <span className="product-badge product-badge--discount">-{discount}%</span>}
-            </div>
-
-            {/* Wishlist */}
-            <button
-                className={`product-wishlist ${wishlisted ? 'product-wishlist--active' : ''}`}
-                onClick={e => { e.stopPropagation(); toggleWishlist(product); }}
-                title={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
-            >
-                {wishlisted ? '♥' : '♡'}
-            </button>
-
-            {/* Image */}
-            <div className="product-card__img-wrap">
-                <img src={product.image} alt={product.name} className="product-card__img" loading="lazy" />
-            </div>
-
-            {/* Info */}
-            <div className="product-card__body">
-                <p className="product-card__name">{product.name}</p>
-                <Stars rating={product.rating} />
-                <p className="product-card__reviews">{product.reviewCount.toLocaleString()} ratings</p>
-
-                {product.prime && (
-                    <div className="product-prime">
-                        <span className="prime-badge">prime</span>
-                    </div>
-                )}
-
-                <div className="product-card__price">
-                    <span className="product-card__price-sym">$</span>
-                    <span className="product-card__price-main">{Math.floor(product.price)}</span>
-                    <span className="product-card__price-cents">{String(product.price.toFixed(2)).split('.')[1]}</span>
-                    {discount > 0 && (
-                        <span className="product-card__price-orig">${product.originalPrice.toFixed(2)}</span>
-                    )}
+        <AOMLink id={`product.${product.id}.view_details`} description={`View details for ${product.name}`} destination="Product Detail">
+            <div className="product-card" onClick={() => onProductClick(product)}>
+                {/* Badges */}
+                <div className="product-card__badges">
+                    {product.badge && <span className="product-badge">{product.badge}</span>}
+                    {discount > 0 && <span className="product-badge product-badge--discount">-{discount}%</span>}
                 </div>
 
-                <button
-                    className={`product-card__add-btn ${added ? 'product-card__add-btn--added' : ''} ${inCart ? 'product-card__add-btn--in-cart' : ''}`}
-                    onClick={handleAddToCart}
-                >
-                    {added ? '✓ Added to Cart' : inCart ? 'Add Again' : 'Add to Cart'}
-                </button>
+                {/* Wishlist */}
+                <AOMAction id={`product.${product.id}.toggle_wishlist`} description={`${wishlisted ? 'Remove' : 'Add'} ${product.name} ${wishlisted ? 'from' : 'to'} wishlist`}>
+                    <button
+                        className={`product-wishlist ${wishlisted ? 'product-wishlist--active' : ''}`}
+                        onClick={e => { e.stopPropagation(); toggleWishlist(product); }}
+                        title={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+                    >
+                        {wishlisted ? '♥' : '♡'}
+                    </button>
+                </AOMAction>
+
+                {/* Image */}
+                <div className="product-card__img-wrap">
+                    <img src={product.image} alt={product.name} className="product-card__img" loading="lazy" />
+                </div>
+
+                {/* Info */}
+                <div className="product-card__body">
+                    <p className="product-card__name">{product.name}</p>
+                    <Stars rating={product.rating} />
+                    <p className="product-card__reviews">{product.reviewCount.toLocaleString()} ratings</p>
+
+                    {product.prime && (
+                        <div className="product-prime">
+                            <span className="prime-badge">prime</span>
+                        </div>
+                    )}
+
+                    <div className="product-card__price">
+                        <span className="product-card__price-sym">$</span>
+                        <span className="product-card__price-main">{Math.floor(product.price)}</span>
+                        <span className="product-card__price-cents">{String(product.price.toFixed(2)).split('.')[1]}</span>
+                        {discount > 0 && (
+                            <span className="product-card__price-orig">${product.originalPrice.toFixed(2)}</span>
+                        )}
+                    </div>
+
+                    <AOMAction id={`product.${product.id}.add_to_cart`} description={`Add ${product.name} to cart`}>
+                        <button
+                            className={`product-card__add-btn ${added ? 'product-card__add-btn--added' : ''} ${inCart ? 'product-card__add-btn--in-cart' : ''}`}
+                            onClick={handleAddToCart}
+                        >
+                            {added ? '✓ Added to Cart' : inCart ? 'Add Again' : 'Add to Cart'}
+                        </button>
+                    </AOMAction>
+                </div>
             </div>
-        </div>
+        </AOMLink>
     );
 }

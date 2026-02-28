@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { AOMAction, AOMInput } from '../../../aom-wrappers';
 import './AddressModal.css';
 
 const DEFAULT = {
@@ -23,12 +24,14 @@ export default function AddressModal({ currentAddress, onSave, onClose }) {
     const field = (key, label, placeholder = '') => (
         <div className="addr-modal__field" key={key}>
             <label className="addr-modal__label">{label}</label>
-            <input
-                className="addr-modal__input"
-                value={addr[key] || ''}
-                placeholder={placeholder}
-                onChange={e => setAddr(a => ({ ...a, [key]: e.target.value }))}
-            />
+            <AOMInput id={`address.${key}`} description={`Enter delivery address: ${label}`} inputType="text">
+                <input
+                    className="addr-modal__input"
+                    value={addr[key] || ''}
+                    placeholder={placeholder}
+                    onChange={e => setAddr(a => ({ ...a, [key]: e.target.value }))}
+                />
+            </AOMInput>
         </div>
     );
 
@@ -37,7 +40,9 @@ export default function AddressModal({ currentAddress, onSave, onClose }) {
             <div className="addr-modal" onClick={e => e.stopPropagation()}>
                 <div className="addr-modal__header">
                     <h2 className="addr-modal__title">Change delivery address</h2>
-                    <button className="addr-modal__close" onClick={onClose}>✕</button>
+                    <AOMAction id="address.close_modal" description="Close address modal without saving">
+                        <button className="addr-modal__close" onClick={onClose}>✕</button>
+                    </AOMAction>
                 </div>
                 <div className="addr-modal__body">
                     {field('fullName', 'Full name')}
@@ -51,8 +56,12 @@ export default function AddressModal({ currentAddress, onSave, onClose }) {
                     {field('country', 'Country')}
                 </div>
                 <div className="addr-modal__footer">
-                    <button className="addr-modal__cancel" onClick={onClose}>Cancel</button>
-                    <button className="addr-modal__save" onClick={handleSave}>Use this address</button>
+                    <AOMAction id="address.cancel" description="Cancel address changes">
+                        <button className="addr-modal__cancel" onClick={onClose}>Cancel</button>
+                    </AOMAction>
+                    <AOMAction id="address.save" description="Save address and use it">
+                        <button className="addr-modal__save" onClick={handleSave}>Use this address</button>
+                    </AOMAction>
                 </div>
             </div>
         </div>

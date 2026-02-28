@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { AOMAction, AOMInput } from '../../../aom-wrappers';
 import './Sidebar.css';
 
 const CATEGORIES = ['All', 'Electronics', 'Books', 'Clothing', 'Home & Kitchen', 'Sports', 'Beauty', 'Toys', 'Grocery'];
@@ -21,7 +22,11 @@ export default function Sidebar({ filters, onFilterChange }) {
         <aside className="amz-sidebar">
             <div className="amz-sidebar__header">
                 <h3>Refine Results</h3>
-                {hasFilters && <button className="amz-clear-btn" onClick={clearAll}>Clear all</button>}
+                {hasFilters && (
+                    <AOMAction id="filter.clear_all" description="Clear all active filters">
+                        <button className="amz-clear-btn" onClick={clearAll}>Clear all</button>
+                    </AOMAction>
+                )}
             </div>
 
             {/* Department */}
@@ -29,13 +34,18 @@ export default function Sidebar({ filters, onFilterChange }) {
                 <h4 className="amz-sidebar__title">Department</h4>
                 <ul className="amz-sidebar__list">
                     {CATEGORIES.map(cat => (
-                        <li
+                        <AOMAction
                             key={cat}
-                            className={`amz-sidebar__item ${filters.category === cat ? 'amz-sidebar__item--active' : ''}`}
-                            onClick={() => onFilterChange({ category: cat })}
+                            id={`filter.category.${cat.replace(/[^a-zA-Z]/g, '').toLowerCase()}`}
+                            description={`Filter by category: ${cat}`}
                         >
-                            {cat}
-                        </li>
+                            <li
+                                className={`amz-sidebar__item ${filters.category === cat ? 'amz-sidebar__item--active' : ''}`}
+                                onClick={() => onFilterChange({ category: cat })}
+                            >
+                                {cat}
+                            </li>
+                        </AOMAction>
                     ))}
                 </ul>
             </div>
@@ -43,31 +53,38 @@ export default function Sidebar({ filters, onFilterChange }) {
             {/* Prime */}
             <div className="amz-sidebar__section">
                 <h4 className="amz-sidebar__title">Prime Eligible</h4>
-                <label className="amz-sidebar__check">
-                    <input
-                        type="checkbox"
-                        checked={filters.prime}
-                        onChange={e => onFilterChange({ prime: e.target.checked })}
-                    />
-                    <span className="prime-badge">prime</span>
-                    <span style={{ fontSize: 12, color: '#555', marginLeft: 4 }}>Eligible</span>
-                </label>
+                <AOMInput id="filter.prime_eligible" description="Filter for Prime eligible items only" inputType="checkbox">
+                    <label className="amz-sidebar__check">
+                        <input
+                            type="checkbox"
+                            checked={filters.prime}
+                            onChange={e => onFilterChange({ prime: e.target.checked })}
+                        />
+                        <span className="prime-badge">prime</span>
+                        <span style={{ fontSize: 12, color: '#555', marginLeft: 4 }}>Eligible</span>
+                    </label>
+                </AOMInput>
             </div>
 
             {/* Customer Reviews */}
             <div className="amz-sidebar__section">
                 <h4 className="amz-sidebar__title">Avg. Customer Review</h4>
                 {[4, 3, 2, 1].map(n => (
-                    <div
+                    <AOMAction
                         key={n}
-                        className={`amz-rating-row ${filters.minRating === n ? 'amz-rating-row--active' : ''}`}
-                        onClick={() => onFilterChange({ minRating: filters.minRating === n ? 0 : n })}
+                        id={`filter.min_rating.${n}`}
+                        description={`Filter by minimum rating: ${n} stars and up`}
                     >
-                        {[1, 2, 3, 4, 5].map(i => (
-                            <span key={i} style={{ color: i <= n ? '#FFA41C' : '#ccc', fontSize: 15 }}>★</span>
-                        ))}
-                        <span style={{ fontSize: 13, marginLeft: 4 }}>&amp; Up</span>
-                    </div>
+                        <div
+                            className={`amz-rating-row ${filters.minRating === n ? 'amz-rating-row--active' : ''}`}
+                            onClick={() => onFilterChange({ minRating: filters.minRating === n ? 0 : n })}
+                        >
+                            {[1, 2, 3, 4, 5].map(i => (
+                                <span key={i} style={{ color: i <= n ? '#FFA41C' : '#ccc', fontSize: 15 }}>★</span>
+                            ))}
+                            <span style={{ fontSize: 13, marginLeft: 4 }}>&amp; Up</span>
+                        </div>
+                    </AOMAction>
                 ))}
             </div>
 
@@ -82,21 +99,32 @@ export default function Sidebar({ filters, onFilterChange }) {
                         { label: '$100 to $200', min: 100, max: 200 },
                         { label: '$200 & Above', min: 200, max: Infinity },
                     ].map(r => (
-                        <div
+                        <AOMAction
                             key={r.label}
-                            className={`amz-sidebar__item ${filters.priceMin === r.min && filters.priceMax === r.max ? 'amz-sidebar__item--active' : ''}`}
-                            onClick={() => onFilterChange({ priceMin: r.min, priceMax: r.max })}
+                            id={`filter.price_range.${r.min}_${r.max === Infinity ? 'up' : r.max}`}
+                            description={`Filter by price range: ${r.label}`}
                         >
-                            {r.label}
-                        </div>
+                            <div
+                                className={`amz-sidebar__item ${filters.priceMin === r.min && filters.priceMax === r.max ? 'amz-sidebar__item--active' : ''}`}
+                                onClick={() => onFilterChange({ priceMin: r.min, priceMax: r.max })}
+                            >
+                                {r.label}
+                            </div>
+                        </AOMAction>
                     ))}
                 </div>
                 <div className="amz-price-custom">
                     <span style={{ fontSize: 12 }}>$</span>
-                    <input className="amz-price-input" placeholder="Min" value={priceInputs.min} onChange={e => setPriceInputs(p => ({ ...p, min: e.target.value }))} />
+                    <AOMInput id="filter.custom_price_min" description="Custom min price" inputType="number">
+                        <input className="amz-price-input" placeholder="Min" value={priceInputs.min} onChange={e => setPriceInputs(p => ({ ...p, min: e.target.value }))} />
+                    </AOMInput>
                     <span style={{ fontSize: 12 }}>to $</span>
-                    <input className="amz-price-input" placeholder="Max" value={priceInputs.max} onChange={e => setPriceInputs(p => ({ ...p, max: e.target.value }))} />
-                    <button className="amz-price-go" onClick={applyPrice}>Go</button>
+                    <AOMInput id="filter.custom_price_max" description="Custom max price" inputType="number">
+                        <input className="amz-price-input" placeholder="Max" value={priceInputs.max} onChange={e => setPriceInputs(p => ({ ...p, max: e.target.value }))} />
+                    </AOMInput>
+                    <AOMAction id="filter.custom_price_submit" description="Apply custom price range">
+                        <button className="amz-price-go" onClick={applyPrice}>Go</button>
+                    </AOMAction>
                 </div>
             </div>
         </aside>

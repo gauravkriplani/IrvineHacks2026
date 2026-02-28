@@ -1,4 +1,5 @@
 import { useCart } from '../context/CartContext';
+import { AOMLink, AOMAction, AOMInput } from '../../../aom-wrappers';
 import './CartPage.css';
 
 const TrashIcon = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" /><path d="M10 11v6M14 11v6" /><path d="M9 6V4h6v2" /></svg>;
@@ -23,9 +24,11 @@ export default function CartPage({ onViewChange, onCheckout }) {
                             <div style={{ fontSize: 80, marginBottom: 20 }}>🛒</div>
                             <h2>Your Amazon Cart is empty.</h2>
                             <p style={{ color: '#555', marginTop: 8 }}>Your shopping cart is waiting. Give it purpose – fill it with groceries, clothing, household supplies, electronics, and more.</p>
-                            <button className="cart-page__continue-btn" onClick={() => onViewChange('home')}>
-                                Continue Shopping
-                            </button>
+                            <AOMLink id="cart.continue_shopping_empty" description="Return to Home from empty cart" destination="Home">
+                                <button className="cart-page__continue-btn" onClick={() => onViewChange('home')}>
+                                    Continue Shopping
+                                </button>
+                            </AOMLink>
                         </div>
                     ) : (
                         <>
@@ -35,22 +38,26 @@ export default function CartPage({ onViewChange, onCheckout }) {
                             {cart.map(item => (
                                 <div key={item.id} className="cart-page__item">
                                     <input type="checkbox" defaultChecked className="cart-page__item-check" />
-                                    <img
-                                        src={item.image}
-                                        alt={item.name}
-                                        className="cart-page__item-img"
-                                        onClick={() => onViewChange('detail', item)}
-                                        style={{ cursor: 'pointer' }}
-                                        title="View product"
-                                    />
-                                    <div className="cart-page__item-info">
-                                        <p
-                                            className="cart-page__item-name"
+                                    <AOMLink id={`cart.item.${item.id}.view_details_img`} description={`View details for ${item.name}`} destination="Product Detail">
+                                        <img
+                                            src={item.image}
+                                            alt={item.name}
+                                            className="cart-page__item-img"
                                             onClick={() => onViewChange('detail', item)}
-                                            style={{ cursor: 'pointer', color: '#0066c0' }}
-                                        >
-                                            {item.name}
-                                        </p>
+                                            style={{ cursor: 'pointer' }}
+                                            title="View product"
+                                        />
+                                    </AOMLink>
+                                    <div className="cart-page__item-info">
+                                        <AOMLink id={`cart.item.${item.id}.view_details_text`} description={`View details for ${item.name}`} destination="Product Detail">
+                                            <p
+                                                className="cart-page__item-name"
+                                                onClick={() => onViewChange('detail', item)}
+                                                style={{ cursor: 'pointer', color: '#0066c0' }}
+                                            >
+                                                {item.name}
+                                            </p>
+                                        </AOMLink>
                                         <p className="cart-page__item-stock">In Stock</p>
                                         {item.prime && (
                                             <div style={{ display: 'flex', alignItems: 'center', gap: 6, margin: '4px 0' }}>
@@ -60,14 +67,20 @@ export default function CartPage({ onViewChange, onCheckout }) {
                                         )}
                                         <div className="cart-page__item-controls">
                                             <div className="cart-qty">
-                                                <button className="cart-qty__btn" onClick={() => setQty(item.id, item.qty - 1)}>−</button>
+                                                <AOMAction id={`cart.item.${item.id}.decrement_qty`} description={`Decrease quantity of ${item.name}`}>
+                                                    <button className="cart-qty__btn" onClick={() => setQty(item.id, item.qty - 1)}>−</button>
+                                                </AOMAction>
                                                 <span className="cart-qty__num">{item.qty}</span>
-                                                <button className="cart-qty__btn" onClick={() => setQty(item.id, item.qty + 1)}>+</button>
+                                                <AOMAction id={`cart.item.${item.id}.increment_qty`} description={`Increase quantity of ${item.name}`}>
+                                                    <button className="cart-qty__btn" onClick={() => setQty(item.id, item.qty + 1)}>+</button>
+                                                </AOMAction>
                                             </div>
                                             <span className="cart-page__divider">|</span>
-                                            <button className="cart-page__action-link" onClick={() => removeFromCart(item.id)}>
-                                                <TrashIcon /> Delete
-                                            </button>
+                                            <AOMAction id={`cart.item.${item.id}.delete`} description={`Remove ${item.name} from cart`}>
+                                                <button className="cart-page__action-link" onClick={() => removeFromCart(item.id)}>
+                                                    <TrashIcon /> Delete
+                                                </button>
+                                            </AOMAction>
                                         </div>
                                     </div>
                                     <div className="cart-page__item-price">
@@ -112,9 +125,11 @@ export default function CartPage({ onViewChange, onCheckout }) {
                                     <span>${total.toFixed(2)}</span>
                                 </div>
                             </div>
-                            <button className="cart-page__checkout-btn" onClick={() => onCheckout()}>
-                                Proceed to Checkout
-                            </button>
+                            <AOMAction id="cart.proceed_to_checkout" description="Proceed to checkout process">
+                                <button className="cart-page__checkout-btn" onClick={() => onCheckout()}>
+                                    Proceed to Checkout
+                                </button>
+                            </AOMAction>
                         </div>
                     </div>
                 )}
