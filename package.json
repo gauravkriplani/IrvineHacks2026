@@ -1,0 +1,22 @@
+{
+  "name": "irvinehacks2026",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start-aom-server": "node server/generate-aom-server.js",
+    "start-aom-ui": "npm run dev --prefix aom-ui",
+    "build-aom-ui": "npm run build --prefix aom-ui",
+    "cli-generate-aom": "node tools/cli-generate-aom.js"
+  },
+  "dependencies": {
+    "@babel/parser": "^7.22.11",
+    "@babel/traverse": "^7.22.5",
+    "archiver": "^5.3.1",
+    "cors": "^2.8.6",
+    "express": "^4.18.2",
+    "fs-extra": "^11.1.1",
+    "glob": "^10.2.7",
+    "multer": "^1.4.5-lts.1",
+    "unzipper": "^0.10.11"
+  }
+}
