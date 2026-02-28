@@ -1,0 +1,145 @@
+/* ── Sidebar ── */
+.amz-sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    font-size: 13px;
+    color: #111;
+}
+
+.amz-sidebar__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.amz-sidebar__header h3 {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.amz-clear-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #0066c0;
+    font-size: 12px;
+}
+
+.amz-clear-btn:hover {
+    text-decoration: underline;
+}
+
+.amz-sidebar__section {
+    margin-bottom: 22px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 18px;
+}
+
+.amz-sidebar__title {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #111;
+}
+
+.amz-sidebar__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.amz-sidebar__item {
+    padding: 4px 0;
+    cursor: pointer;
+    color: #0066c0;
+    border-radius: 2px;
+    transition: color 0.13s;
+    font-size: 13px;
+}
+
+.amz-sidebar__item:hover {
+    text-decoration: underline;
+}
+
+.amz-sidebar__item--active {
+    font-weight: 700;
+    color: #111;
+    text-decoration: none;
+}
+
+/* Prime checkbox */
+.amz-sidebar__check {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.prime-badge {
+    background: #00A8E0;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    font-style: italic;
+    padding: 1px 5px;
+    border-radius: 2px;
+    letter-spacing: 0.3px;
+}
+
+/* Ratings */
+.amz-rating-row {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 3px 0;
+    border-radius: 2px;
+    transition: background 0.13s;
+}
+
+.amz-rating-row:hover {
+    text-decoration: underline;
+}
+
+.amz-rating-row--active {
+    font-weight: 700;
+}
+
+/* Price */
+.amz-price-ranges {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 10px;
+}
+
+.amz-price-custom {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 8px;
+}
+
+.amz-price-input {
+    width: 60px;
+    border: 1px solid #888;
+    border-radius: 3px;
+    padding: 4px 6px;
+    font-size: 12px;
+}
+
+.amz-price-go {
+    background: #e5e5e5;
+    border: 1px solid #888;
+    border-radius: 3px;
+    padding: 4px 10px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.amz-price-go:hover {
+    background: #d5d5d5;
+}
