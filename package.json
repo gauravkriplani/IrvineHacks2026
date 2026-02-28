@@ -4,8 +4,8 @@
   "type": "module",
   "scripts": {
     "start-aom-server": "node server/generate-aom-server.js",
-    "start-aom-ui": "npm run dev --prefix aom-ui",
-    "build-aom-ui": "npm run build --prefix aom-ui",
+    "start-aom-ui": "npm run dev --prefix frontend",
+    "build-aom-ui": "npm run build --prefix frontend",
     "cli-generate-aom": "node tools/cli-generate-aom.js"
   },
   "dependencies": {

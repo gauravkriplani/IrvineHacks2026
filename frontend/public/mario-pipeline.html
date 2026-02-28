@@ -257,6 +257,77 @@
         height: calc(var(--btn-height) * 0.5);
       }
     }
+    /* ===================== OUTPUT PANEL — ready state ===================== */
+    #outputPanel.has-result { opacity: 1; cursor: pointer; }
+
+    /* ===================== PLAY BUTTON — loading state ==================== */
+    .play-btn.loading .play-btn-inner { background: #e8c23a !important; }
+    .play-btn.loading .play-icon { border-left-color: #a07800 !important; }
+
+    /* ===================== HUD (mode toggle + status) ===================== */
+    .hud {
+      position: absolute;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      z-index: 10;
+    }
+    .mode-bar {
+      display: flex;
+      gap: 6px;
+    }
+    .mode-btn {
+      font-family: monospace;
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border: 2px solid #000;
+      border-bottom-width: 3px;
+      border-right-width: 3px;
+      cursor: pointer;
+      background: #41D83D;
+      color: #003300;
+      image-rendering: pixelated;
+      transition: filter 0.08s;
+      outline: none;
+      user-select: none;
+    }
+    .mode-btn:hover { filter: brightness(1.12); }
+    .mode-btn.active {
+      background: #e8c23a;
+      color: #3a2800;
+      border-color: #3a2800;
+    }
+    .status-msg {
+      font-family: monospace;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #003300;
+      background: rgba(255,255,255,0.7);
+      padding: 3px 10px;
+      border: 2px solid #000;
+      min-width: 220px;
+      text-align: center;
+      max-width: 80vw;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .status-msg.error { color: #8b0000; border-color: #8b0000; background: rgba(255,200,200,0.8); }
+    .status-msg.done  { color: #003300; border-color: #003300; background: rgba(180,255,180,0.85); }
+    .status-msg.hidden { display: none; }
+
+    @media (max-width: 600px) {
+      .hud { bottom: 12px; }
+      .mode-btn { font-size: 10px; padding: 4px 8px; }
+    }
   </style>
 </head>
 <body>
@@ -683,43 +754,144 @@
 
 </div><!-- /scene -->
 
+  <!-- HUD: mode toggle + status -->
+  <div class="hud">
+    <div class="mode-bar">
+      <button class="mode-btn active" id="modeWrappers">Generate Wrappers</button>
+      <button class="mode-btn" id="modeAnnotate">Annotate Source</button>
+    </div>
+    <div class="status-msg hidden" id="statusMsg">Ready</div>
+  </div>
 <script>
-  const playBtn    = document.getElementById('playBtn');
-  const sound      = document.getElementById('pipeSound');
-  const uploadPanel = document.getElementById('uploadPanel');
-  const fileInput  = document.getElementById('fileInput');
-  const uploadSvg  = document.getElementById('uploadSvg');
-  const uploadedSvg = document.getElementById('uploadedSvg');
-  const fileLabel  = document.getElementById('fileLabel');
+  // ── Config ─────────────────────────────────────────────────────────────────
+  const API_BASE = 'http://localhost:4000'
+  const MODES = {
+    wrappers: { endpoint: '/api/generate-aom',    download: 'aom-wrappers.zip',      label: 'Generate Wrappers' },
+    annotate: { endpoint: '/api/annotate-source', download: 'annotated-source.zip',  label: 'Annotate Source'   },
+  }
+  let currentMode = 'wrappers'
+  let selectedFile = null
+  let resultBlob   = null
 
-  // Play sound on button click, then reset upload panel to initial state
-  playBtn.addEventListener('click', () => {
-    sound.currentTime = 0;
-    sound.play().catch(() => {});
-    // Reset upload panel back to 50% opacity + plus icon
-    uploadPanel.classList.remove('has-file');
-    uploadSvg.style.display = '';
-    uploadedSvg.style.display = 'none';
-    fileInput.value = '';
-  });
+  // ── Elements ────────────────────────────────────────────────────────────────
+  const playBtn      = document.getElementById('playBtn')
+  const sound        = document.getElementById('pipeSound')
+  const uploadPanel  = document.getElementById('uploadPanel')
+  const fileInput    = document.getElementById('fileInput')
+  const uploadSvg    = document.getElementById('uploadSvg')
+  const uploadedSvg  = document.getElementById('uploadedSvg')
+  const fileLabel    = document.getElementById('fileLabel')
+  const outputPanel  = document.getElementById('outputPanel')
+  const statusMsg    = document.getElementById('statusMsg')
+  const modeWrappers = document.getElementById('modeWrappers')
+  const modeAnnotate = document.getElementById('modeAnnotate')
 
-  // Clicking upload panel triggers file picker
+  // ── Mode toggle ─────────────────────────────────────────────────────────────
+  modeWrappers.addEventListener('click', () => setMode('wrappers'))
+  modeAnnotate.addEventListener('click', () => setMode('annotate'))
+
+  function setMode(id) {
+    currentMode = id
+    modeWrappers.classList.toggle('active', id === 'wrappers')
+    modeAnnotate.classList.toggle('active', id === 'annotate')
+    setStatus('', 'hidden')
+    clearResult()
+  }
+
+  // ── Status helper ───────────────────────────────────────────────────────────
+  function setStatus(text, cls = '') {
+    statusMsg.textContent = text
+    statusMsg.className   = 'status-msg' + (cls ? ' ' + cls : '')
+  }
+
+  // ── Result state ────────────────────────────────────────────────────────────
+  function setResult(blob) {
+    resultBlob = blob
+    outputPanel.classList.add('has-result')
+    outputPanel.title = 'Click to download ' + MODES[currentMode].download
+  }
+
+  function clearResult() {
+    resultBlob = null
+    outputPanel.classList.remove('has-result')
+    outputPanel.title = 'Output (click play to generate)'
+  }
+
+  // ── Upload panel — click to pick file ───────────────────────────────────────
   uploadPanel.addEventListener('click', () => {
-    fileInput.click();
-  });
+    if (playBtn.classList.contains('loading')) return
+    fileInput.click()
+  })
 
-  // When file is selected: show output-style SVG at 100% opacity
   fileInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    // Truncate filename to fit
-    let name = file.name;
-    if (name.length > 12) name = name.slice(0, 10) + '…';
-    fileLabel.textContent = name;
-    uploadSvg.style.display = 'none';
-    uploadedSvg.style.display = '';
-    uploadPanel.classList.add('has-file');
-  });
+    const file = e.target.files[0]
+    if (!file) return
+    selectedFile = file
+    let name = file.name
+    if (name.length > 12) name = name.slice(0, 10) + '\u2026'
+    fileLabel.textContent = name
+    uploadSvg.style.display    = 'none'
+    uploadedSvg.style.display  = ''
+    uploadPanel.classList.add('has-file')
+    clearResult()
+    setStatus('File ready — press play!', '')
+  })
+
+  // ── Output panel — click to re-download ─────────────────────────────────────
+  outputPanel.addEventListener('click', () => {
+    if (!resultBlob) return
+    triggerDownload(resultBlob, MODES[currentMode].download)
+  })
+
+  function triggerDownload(blob, filename) {
+    const url = URL.createObjectURL(blob)
+    const a   = document.createElement('a')
+    a.href     = url
+    a.download = filename
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  // ── Play button — run the pipeline ──────────────────────────────────────────
+  playBtn.addEventListener('click', async () => {
+    // Always play the sound
+    sound.currentTime = 0
+    sound.play().catch(() => {})
+
+    if (!selectedFile) {
+      setStatus('Upload a .zip first!', 'error')
+      return
+    }
+
+    if (playBtn.classList.contains('loading')) return
+
+    // Loading state
+    playBtn.classList.add('loading')
+    clearResult()
+    setStatus('Processing\u2026', '')
+
+    try {
+      const formData = new FormData()
+      formData.append('file', selectedFile)
+
+      const res = await fetch(API_BASE + MODES[currentMode].endpoint, {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (!res.ok) throw new Error('Server error ' + res.status)
+
+      const blob = await res.blob()
+      triggerDownload(blob, MODES[currentMode].download)
+      setResult(blob)
+      setStatus('\u2713 ' + MODES[currentMode].download + ' downloaded!', 'done')
+    } catch (err) {
+      setStatus('\u2717 ' + err.message, 'error')
+      clearResult()
+    } finally {
+      playBtn.classList.remove('loading')
+    }
+  })
 </script>
 </body>
 </html>
