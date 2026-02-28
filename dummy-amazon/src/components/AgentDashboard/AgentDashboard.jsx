@@ -7,6 +7,9 @@ export default function AgentDashboard() {
     const [agentState, setAgentState] = useState({});
     const [command, setCommand] = useState('');
     const [history, setHistory] = useState([]);
+    const [apiKey, setApiKey] = useState(() => import.meta.env.VITE_OPEN_AI_KEY || localStorage.getItem('openai_api_key') || '');
+    const [isConfiguring, setIsConfiguring] = useState(!(import.meta.env.VITE_OPEN_AI_KEY || localStorage.getItem('openai_api_key')));
+    const [isProcessing, setIsProcessing] = useState(false);
 
     // Keep the JSON view in sync with the live AOMRegistry
     useEffect(() => {
@@ -27,62 +30,94 @@ export default function AgentDashboard() {
         return unsubscribe;
     }, []);
 
-    const executeCommand = (e) => {
+    const saveApiKey = () => {
+        localStorage.setItem('openai_api_key', apiKey);
+        setIsConfiguring(false);
+    };
+
+    const processLLMCommand = async (naturalCommand, currentState) => {
+        if (!apiKey) throw new Error("OpenAI API Key is missing. Please configure it.");
+
+        const systemPrompt = `You are an AI browser agent translating natural language commands into explicit UI actions.
+You have access to the following Agent Object Model (AOM) state representing the currently available UI interactive elements:
+${JSON.stringify(currentState, null, 2)}
+
+Your job is to match the user's request to the BEST single available action.
+Return a RAW JSON object (no markdown, no backticks) with:
+{
+  "actionId": "the string key from the AOM state",
+  "actionType": "execute" | "navigate" | "fill",
+  "value": "the string value to fill if actionType is fill, otherwise omit"
+}
+If no action matches the user request, return { "error": "No matching action found." }`;
+
+        const response = await fetch('/api/openai/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}`
+            },
+            body: JSON.stringify({
+                model: 'gpt-4o-mini',
+                messages: [
+                    { role: 'system', content: systemPrompt },
+                    { role: 'user', content: naturalCommand }
+                ],
+                temperature: 0,
+            })
+        });
+
+        if (!response.ok) {
+            const err = await response.json();
+            throw new Error(err.error?.message || 'OpenAI API request failed');
+        }
+
+        const data = await response.json();
+        const content = data.choices[0].message.content.trim();
+        return JSON.parse(content);
+    };
+
+    const executeCommand = async (e) => {
         e.preventDefault();
-        if (!command.trim()) return;
+        if (!command.trim() || isProcessing) return;
 
         const cmd = command.trim();
-        let success = false;
-        let message = '';
+        setCommand('');
+        setIsProcessing(true);
+        setHistory(h => [...h, { type: 'user', text: cmd }]);
 
         try {
-            // Very basic matching for demo purposes
-            if (cmd.startsWith('fill ')) {
-                // e.g. "fill auth.login.username testuser"
-                const [, id, ...valParts] = cmd.split(' ');
-                const val = valParts.join(' ');
-                window.__AOM__.fill(id, val);
-                success = true;
-                message = `Filled ${id} with "${val}"`;
-            } else if (window.__AOM__.has(cmd)) {
-                // Exact action ID match
-                const action = window.__AOM__.get(cmd);
-                if (action.kind === 'link') {
-                    window.__AOM__.navigate(cmd);
-                    message = `Navigated via ${cmd}`;
-                } else {
-                    window.__AOM__.execute(cmd);
-                    message = `Executed ${cmd}`;
-                }
-                success = true;
-            } else {
-                // Try fuzzy matching
-                const state = window.__AOM__.getState();
-                const matchedId = Object.keys(state).find(id =>
-                    id.toLowerCase().includes(cmd.toLowerCase()) ||
-                    state[id].description.toLowerCase().includes(cmd.toLowerCase())
-                );
+            const state = window.__AOM__.getState();
+            const llmDecision = await processLLMCommand(cmd, state);
 
-                if (matchedId) {
-                    const action = window.__AOM__.get(matchedId);
-                    if (action.kind === 'link') {
-                        window.__AOM__.navigate(matchedId);
-                    } else if (action.kind !== 'input') {
-                        window.__AOM__.execute(matchedId);
-                    }
-                    success = true;
-                    message = `Fuzzy matched and executed ${matchedId}`;
+            if (llmDecision.error) {
+                setHistory(h => [...h, { type: 'agent', success: false, message: llmDecision.error }]);
+            } else {
+                const { actionId, actionType, value } = llmDecision;
+
+                if (!window.__AOM__.has(actionId)) {
+                    setHistory(h => [...h, { type: 'agent', success: false, message: `LLM predicted unknown action ID: ${actionId}` }]);
                 } else {
-                    message = `Unknown command: ${cmd}`;
+                    let execMessage = '';
+                    if (actionType === 'fill') {
+                        window.__AOM__.fill(actionId, value);
+                        execMessage = `window.__AOM__.fill('${actionId}', '${value}')`;
+                    } else if (actionType === 'navigate') {
+                        window.__AOM__.navigate(actionId);
+                        execMessage = `window.__AOM__.navigate('${actionId}')`;
+                    } else {
+                        window.__AOM__.execute(actionId);
+                        execMessage = `window.__AOM__.execute('${actionId}')`;
+                    }
+
+                    setHistory(h => [...h, { type: 'agent', success: true, message: execMessage, actionId }]);
                 }
             }
         } catch (err) {
-            success = false;
-            message = `Error: ${err.message}`;
+            setHistory(h => [...h, { type: 'agent', success: false, message: `Error: ${err.message}` }]);
+        } finally {
+            setIsProcessing(false);
         }
-
-        setHistory(h => [...h, { cmd, success, message }]);
-        setCommand('');
     };
 
     if (collapsed) {
@@ -97,33 +132,59 @@ export default function AgentDashboard() {
         <div className="agent-dashboard">
             <div className="agent-dashboard__header">
                 <h3>🤖 Agent API Surface</h3>
-                <button onClick={() => setCollapsed(true)}>—</button>
+                <div>
+                    <button className="agent-settings-btn" onClick={() => setIsConfiguring(!isConfiguring)}>⚙️</button>
+                    <button onClick={() => setCollapsed(true)}>—</button>
+                </div>
             </div>
 
             <div className="agent-dashboard__content">
-                <div className="agent-dashboard__state">
-                    <h4>Live AOM State</h4>
-                    <pre>{JSON.stringify(agentState, null, 2)}</pre>
-                </div>
-
-                <div className="agent-dashboard__history">
-                    {history.map((item, i) => (
-                        <div key={i} className={`agent-history-item ${item.success ? 'agent-history-item--success' : 'agent-history-item--error'}`}>
-                            <span className="agent-history-cmd">&gt; {item.cmd}</span>
-                            <span className="agent-history-msg">{item.message}</span>
+                {isConfiguring ? (
+                    <div className="agent-dashboard__config">
+                        <p style={{ fontSize: 13, marginBottom: 8, color: '#aaa' }}>Enter your OpenAI API Key to enable natural language commands.</p>
+                        <input
+                            type="password"
+                            placeholder="sk-..."
+                            value={apiKey}
+                            onChange={e => setApiKey(e.target.value)}
+                            className="agent-config-input"
+                        />
+                        <button onClick={saveApiKey} className="agent-config-save">Save Key</button>
+                    </div>
+                ) : (
+                    <>
+                        <div className="agent-dashboard__state">
+                            <h4>Live AOM State</h4>
+                            <pre>{JSON.stringify(agentState, null, 2)}</pre>
                         </div>
-                    ))}
-                </div>
 
-                <form className="agent-dashboard__form" onSubmit={executeCommand}>
-                    <input
-                        type="text"
-                        value={command}
-                        onChange={e => setCommand(e.target.value)}
-                        placeholder="Type an action_id or 'fill [id] [val]'"
-                    />
-                    <button type="submit">Run</button>
-                </form>
+                        <div className="agent-dashboard__history">
+                            {history.map((item, i) => {
+                                if (item.type === 'user') {
+                                    return <div key={i} className="agent-history-chat agent-history-chat--user">{item.text}</div>;
+                                }
+                                return (
+                                    <div key={i} className={`agent-history-item ${item.success ? 'agent-history-item--success' : 'agent-history-item--error'}`}>
+                                        <span className="agent-history-cmd">⚡ {item.message}</span>
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        <form className="agent-dashboard__form" onSubmit={executeCommand}>
+                            <input
+                                type="text"
+                                value={command}
+                                onChange={e => setCommand(e.target.value)}
+                                placeholder="E.g., 'Add the Macbook to my cart'"
+                                disabled={isProcessing}
+                            />
+                            <button type="submit" disabled={isProcessing || !command.trim()}>
+                                {isProcessing ? '...' : 'Send'}
+                            </button>
+                        </form>
+                    </>
+                )}
             </div>
         </div>
     );
