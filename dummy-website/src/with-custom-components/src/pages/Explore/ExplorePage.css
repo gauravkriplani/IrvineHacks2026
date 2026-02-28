@@ -62,6 +62,12 @@
     background: var(--bg-hover);
 }
 
+.explore-tab--active {
+    background: var(--text-primary);
+    color: var(--bg-primary);
+    border-color: var(--text-primary);
+}
+
 .explore-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);

@@ -23,24 +23,39 @@ const SaveIcon = ({ filled }) => (
         <polygon points="19 21 12 16 5 21 5 3 19 3 19 21" />
     </svg>
 );
-const MoreIcon = () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-        <circle cx="12" cy="5" r="1.5" /><circle cx="12" cy="12" r="1.5" /><circle cx="12" cy="19" r="1.5" />
-    </svg>
-);
 const VerifiedIcon = () => (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="#0095f6">
         <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+);
+const CloseIcon = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
     </svg>
 );
 
 export default function PostCard({ post, onLike, onSave }) {
     const [showAllCaption, setShowAllCaption] = useState(false);
     const [comment, setComment] = useState('');
+    const [comments, setComments] = useState([]);
     const [imgLoaded, setImgLoaded] = useState(false);
+    const [showComments, setShowComments] = useState(false);
+    const [shareToast, setShareToast] = useState(false);
 
     const caption = post.caption;
     const isLong = caption.length > 100;
+
+    const handleShare = () => {
+        navigator.clipboard?.writeText(`https://instagram.com/p/${post.id}`).catch(() => { });
+        setShareToast(true);
+        setTimeout(() => setShareToast(false), 2000);
+    };
+
+    const handlePostComment = () => {
+        if (!comment.trim()) return;
+        setComments(c => [...c, { id: Date.now(), text: comment, user: 'you.dev' }]);
+        setComment('');
+    };
 
     return (
         <article className="post-card">
@@ -58,7 +73,7 @@ export default function PostCard({ post, onLike, onSave }) {
                         {post.location && <span className="post-card__location">{post.location}</span>}
                     </div>
                 </div>
-                <button className="post-card__more"><MoreIcon /></button>
+                {/* Settings button removed */}
             </div>
 
             {/* Image */}
@@ -79,13 +94,23 @@ export default function PostCard({ post, onLike, onSave }) {
                     <button className={`post-card__action-btn ${post.liked ? 'post-card__action-btn--liked' : ''}`} onClick={() => onLike(post.id)}>
                         <HeartIcon filled={post.liked} />
                     </button>
-                    <button className="post-card__action-btn"><CommentIcon /></button>
-                    <button className="post-card__action-btn"><ShareIcon /></button>
+                    <button className="post-card__action-btn" onClick={() => setShowComments(v => !v)}>
+                        <CommentIcon />
+                    </button>
+                    <button className="post-card__action-btn" onClick={handleShare}>
+                        <ShareIcon />
+                    </button>
                 </div>
                 <button className={`post-card__action-btn ${post.saved ? 'post-card__action-btn--saved' : ''}`} onClick={() => onSave(post.id)}>
                     <SaveIcon filled={post.saved} />
                 </button>
             </div>
+
+            {shareToast && (
+                <div style={{ fontSize: 12, color: 'var(--text-muted)', padding: '0 16px 4px', animation: 'fadeIn 0.2s' }}>
+                    🔗 Link copied!
+                </div>
+            )}
 
             {/* Likes */}
             <div className="post-card__likes">
@@ -100,10 +125,21 @@ export default function PostCard({ post, onLike, onSave }) {
                 ) : caption}
             </div>
 
-            {/* Comments count */}
-            <Link to={`/p/${post.id}`} className="post-card__comments-link">
-                View all {post.comments} comments
-            </Link>
+            {/* Comments count toggle */}
+            <button className="post-card__comments-link" onClick={() => setShowComments(v => !v)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: 'var(--text-muted)', fontSize: 13, display: 'block', textAlign: 'left', paddingLeft: 16, paddingBottom: 4 }}>
+                View all {post.comments + comments.length} comments
+            </button>
+
+            {/* Inline comments panel */}
+            {showComments && (
+                <div className="post-card__comments-panel">
+                    {comments.map(c => (
+                        <div key={c.id} className="post-card__comment-item">
+                            <span className="post-card__caption-username">{c.user}</span> {c.text}
+                        </div>
+                    ))}
+                </div>
+            )}
 
             {/* Add comment */}
             <div className="post-card__comment-box">
@@ -112,9 +148,10 @@ export default function PostCard({ post, onLike, onSave }) {
                     placeholder="Add a comment…"
                     value={comment}
                     onChange={e => setComment(e.target.value)}
+                    onKeyDown={e => e.key === 'Enter' && handlePostComment()}
                 />
                 {comment && (
-                    <button className="post-card__post-btn" onClick={() => setComment('')}>Post</button>
+                    <button className="post-card__post-btn" onClick={handlePostComment}>Post</button>
                 )}
             </div>
 

@@ -86,7 +86,9 @@
     font-size: 13px;
     font-weight: 600;
     color: var(--text-primary);
-    truncate: true;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .feed-suggested-user__sub {
@@ -123,4 +125,87 @@
     .feed-main {
         max-width: 100%;
     }
+}
+
+/* ── Story viewer modal ──────────────────────────── */
+.story-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    animation: fadeIn 0.15s ease;
+}
+
+.story-modal__content {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    aspect-ratio: 9/16;
+    background: #111;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.story-modal__bar {
+    width: 80%;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 2px;
+    margin: 12px auto 8px;
+    animation: storyProgress 5s linear forwards;
+}
+
+@keyframes storyProgress {
+    from {
+        width: 0
+    }
+
+    to {
+        width: 80%
+    }
+}
+
+.story-modal__avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-top: 4px;
+    border: 2px solid white;
+}
+
+.story-modal__username {
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    margin: 6px 0;
+}
+
+.story-modal__img {
+    width: 100%;
+    flex: 1;
+    object-fit: cover;
+}
+
+.story-modal__close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    color: white;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

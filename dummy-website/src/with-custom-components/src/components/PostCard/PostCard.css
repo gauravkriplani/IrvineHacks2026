@@ -192,3 +192,17 @@
     text-transform: uppercase;
     letter-spacing: 0.04em;
 }
+
+.post-card__comments-panel {
+    padding: 0 16px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    animation: fadeIn 0.2s ease;
+}
+
+.post-card__comment-item {
+    font-size: 13px;
+    color: var(--text-primary);
+    line-height: 1.4;
+}
