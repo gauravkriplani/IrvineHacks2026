@@ -88,41 +88,46 @@ Requirements:
 
 ---
 
-## 4. Execution Model
+## 4. System Architecture
 
-The system must support deterministic execution via mapping:
+The implemented Agent Object Model (AOM) system consists of three interconnected layers:
 
-`action_id` → runtime handler OR API endpoint
+### 4.1 AOM Wrappers (Runtime)
+React components (`AOMAction`, `AOMInput`, `AOMLink`) that wrap existing interactive elements in the application. They:
+- Register themselves with the global `AOMRegistry` on component mount.
+- Unregister on component unmount to keep the agent's view perfectly synced with the DOM.
+- Expose deterministic `action_id` references (e.g., `checkout.submit_order`).
 
-Execution must:
+### 4.2 AOM Registry (Global State)
+A strict singleton exposed on `window.__AOM__` that serves as the bridge between the UI and the Agent.
+- Maintains a live dictionary of all available interactive elements.
+- Provides methods for agents to interact: `execute(id)`, `fill(id, value)`, `navigate(id)`.
+- Replaces brittle DOM querying with guaranteed JavaScript event execution.
 
-* Avoid DOM-based automation
-* Support direct invocation
-* Support permission enforcement
-* Be auditable/loggable
-
----
-
-## 5. Non-Functional Requirements
-
-* No runtime bundle size increase
-* No modification of application logic
-* Deterministic output
-* Scalable to large codebases
-* Compatible with modern React/Next.js apps
-
-## 6. Out of Scope (V1)
-
-* Runtime wrapper injection
-* Fine-tuned AI models
-* Vision-based UI parsing
-* Cross-framework universal support
+### 4.3 Agent Dashboard & LLM Chat Integration
+A floating dashboard injected into target applications (e.g., `@dummy-amazon`) to visualize and test agent capabilities.
+- Displays the live, dynamic `agentState` JSON.
+- Features a Natural Language Chat Interface powered by OpenAI Whisper/GPT-4o-mini.
+- Automatically translates plain English requests (e.g., "Add airpods to cart") into deterministic AOM commands (e.g., `window.__AOM__.execute('product.1.add_to_cart')`).
+- Utilizes a Vite API proxy to cleanly bypass browser CORS restrictions during development.
 
 ---
 
-## 7. Success Criteria
+## 5. Execution Model
 
-* Agent can operate using only `agent-surface.json`
-* 10x–100x reduction in prompt size compared to DOM parsing
-* Deterministic execution path
-* Stable artifact across builds
+The system supports deterministic execution via mapping:
+
+`action_id` → `AOMRegistry` → Original React Component Handler
+
+Execution guarantees:
+- **No DOM-based automation:** Agents do not need CSS selectors or x/y coordinates.
+- **Instantaneous state:** The registry updates immediately during React lifecycles.
+- **Reduced Hallucinations:** The LLM is provided a strict menu of exactly what is possible on the screen at that exact millisecond.
+
+---
+
+## 6. Success Criteria & Results
+
+- **Complete Decoupling:** Agents can operate using only the subset of data provided by the AOM layer.
+- **Massive Prompt Reduction:** 10x–100x reduction in prompt size compared to feeding raw DOM HTML into an LLM.
+- **Resilience:** Changes to CSS classes, div structures, and virtualized lists no longer break agent scripts. As long as the `action_id` remains stable, the agent functions perfectly.
