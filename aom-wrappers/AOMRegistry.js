@@ -159,8 +159,11 @@ class AOMRegistryClass {
     }
 }
 
-// Singleton — shared across the entire app
-const AOMRegistry = new AOMRegistryClass();
+// Singleton — shared across the entire app.
+// Prevent multiple instances if Vite evaluates this module via different paths.
+const AOMRegistry = (typeof window !== 'undefined' && window.__AOM__)
+    ? window.__AOM__
+    : new AOMRegistryClass();
 
 // Expose on window so agents can access from any context
 if (typeof window !== 'undefined') {
