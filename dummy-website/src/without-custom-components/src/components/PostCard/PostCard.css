@@ -1,0 +1,194 @@
+.post-card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    margin-bottom: 24px;
+    animation: fadeIn 0.4s ease;
+    overflow: hidden;
+}
+
+.post-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+}
+
+.post-card__user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.post-card__user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.post-card__username {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: opacity var(--transition);
+}
+
+.post-card__username:hover {
+    opacity: 0.8;
+}
+
+.post-card__location {
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+.post-card__more {
+    color: var(--text-primary);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    transition: background var(--transition);
+}
+
+.post-card__more:hover {
+    background: var(--bg-elevated);
+}
+
+.post-card__image-wrap {
+    width: 100%;
+    aspect-ratio: 1;
+    overflow: hidden;
+    background: var(--bg-elevated);
+}
+
+.post-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+    cursor: pointer;
+}
+
+.post-card__image:hover {
+    transform: scale(1.01);
+}
+
+.post-card__actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 12px 4px;
+}
+
+.post-card__actions-left {
+    display: flex;
+    gap: 4px;
+}
+
+.post-card__action-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-primary);
+    padding: 8px;
+    border-radius: 50%;
+    transition: all var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.post-card__action-btn:hover {
+    color: var(--text-secondary);
+    transform: scale(1.1);
+}
+
+.post-card__action-btn--liked {
+    animation: pulse 0.3s ease;
+}
+
+.post-card__likes {
+    padding: 0 16px 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.post-card__caption {
+    padding: 0 16px 6px;
+    font-size: 14px;
+    color: var(--text-primary);
+    line-height: 1.5;
+}
+
+.post-card__caption-username {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.post-card__caption-username:hover {
+    opacity: 0.8;
+}
+
+.post-card__more-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 14px;
+    padding: 0;
+}
+
+.post-card__comments-link {
+    display: block;
+    padding: 2px 16px;
+    font-size: 14px;
+    color: var(--text-muted);
+    transition: color var(--transition);
+}
+
+.post-card__comments-link:hover {
+    color: var(--text-secondary);
+}
+
+.post-card__comment-box {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    border-top: 1px solid var(--border);
+    gap: 8px;
+}
+
+.post-card__comment-input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text-primary);
+    font-size: 14px;
+}
+
+.post-card__comment-input::placeholder {
+    color: var(--text-muted);
+}
+
+.post-card__post-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--accent);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.post-card__timestamp {
+    padding: 2px 16px 12px;
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}

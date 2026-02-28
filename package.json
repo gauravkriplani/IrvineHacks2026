@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "parse": "node parse-aom.js --src",
+    "generate": "node generate-agent-capabilities.js"
   },
   "repository": {
     "type": "git",
@@ -19,6 +21,8 @@
   },
   "homepage": "https://github.com/gauravkriplani/IrvineHacks2026#readme",
   "dependencies": {
+    "@babel/parser": "^7.29.0",
+    "@babel/traverse": "^7.29.0",
     "ajv": "^8.18.0",
     "fs-extra": "^11.3.3",
     "glob": "^13.0.6",
