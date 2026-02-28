@@ -10,6 +10,7 @@ export default function AgentDashboard() {
     const [apiKey, setApiKey] = useState(() => import.meta.env.VITE_OPEN_AI_KEY || localStorage.getItem('openai_api_key') || '');
     const [isConfiguring, setIsConfiguring] = useState(!(import.meta.env.VITE_OPEN_AI_KEY || localStorage.getItem('openai_api_key')));
     const [isProcessing, setIsProcessing] = useState(false);
+    const [contextMode, setContextMode] = useState('AOM'); // 'AOM' | 'HTML'
 
     // Keep the JSON view in sync with the live AOMRegistry
     useEffect(() => {
@@ -38,7 +39,9 @@ export default function AgentDashboard() {
     const processLLMCommand = async (naturalCommand, currentState) => {
         if (!apiKey) throw new Error("OpenAI API Key is missing. Please configure it.");
 
-        const systemPrompt = `You are an AI browser agent translating natural language commands into explicit UI actions.
+        let systemPrompt = '';
+        if (contextMode === 'AOM') {
+            systemPrompt = `You are an AI browser agent translating natural language commands into explicit UI actions.
 You have access to the following Agent Object Model (AOM) state representing the currently available UI interactive elements:
 ${JSON.stringify(currentState, null, 2)}
 
@@ -50,6 +53,19 @@ Return a RAW JSON object (no markdown, no backticks) with:
   "value": "the string value to fill if actionType is fill, otherwise omit"
 }
 If no action matches the user request, return { "error": "No matching action found." }`;
+        } else {
+            const rawHTML = document.documentElement.outerHTML.substring(0, 100000); // Send massive chunk for demo comparison
+            systemPrompt = `You are an AI browser agent automating a website. This is the raw HTML of the page you are on:
+${rawHTML}
+
+Your job is to find the right element to interact with based on the user's request.
+Return a RAW JSON object (no markdown, no backticks) with:
+{
+  "actionId": "DOM element selector, e.g., #nav-cart or .buy-button",
+  "actionType": "execute",
+  "error": "If you cannot easily identify the exact deterministic action to take from this mess, explain why it's hard to parse."
+}`;
+        }
 
         const response = await fetch('/api/openai/v1/chat/completions', {
             method: 'POST',
@@ -92,6 +108,9 @@ If no action matches the user request, return { "error": "No matching action fou
 
             if (llmDecision.error) {
                 setHistory(h => [...h, { type: 'agent', success: false, message: llmDecision.error }]);
+            } else if (contextMode === 'HTML') {
+                // If the agent actually returns a selector (which is extremely hard), just show it.
+                setHistory(h => [...h, { type: 'agent', success: false, message: `HTML Selector Predicted: ${llmDecision.actionId} (Likely fragile)` }]);
             } else {
                 const { actionId, actionType, value } = llmDecision;
 
@@ -132,9 +151,13 @@ If no action matches the user request, return { "error": "No matching action fou
         <div className="agent-dashboard">
             <div className="agent-dashboard__header">
                 <h3>🤖 Agent API Surface</h3>
-                <div>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <div className="agent-dashboard__mode-toggle">
+                        <button className={contextMode === 'AOM' ? 'active' : ''} onClick={() => setContextMode('AOM')}>AOM</button>
+                        <button className={contextMode === 'HTML' ? 'active' : ''} onClick={() => setContextMode('HTML')}>HTML</button>
+                    </div>
                     <button className="agent-settings-btn" onClick={() => setIsConfiguring(!isConfiguring)}>⚙️</button>
-                    <button onClick={() => setCollapsed(true)}>—</button>
+                    <button className="agent-minimize-btn" onClick={() => setCollapsed(true)}>—</button>
                 </div>
             </div>
 
@@ -154,8 +177,12 @@ If no action matches the user request, return { "error": "No matching action fou
                 ) : (
                     <>
                         <div className="agent-dashboard__state">
-                            <h4>Live AOM State</h4>
-                            <pre>{JSON.stringify(agentState, null, 2)}</pre>
+                            <h4>{contextMode === 'AOM' ? 'Live AOM State' : 'Raw HTML State (Visualized)'}</h4>
+                            <pre>
+                                {contextMode === 'AOM'
+                                    ? JSON.stringify(agentState, null, 2)
+                                    : document.documentElement.outerHTML.substring(0, 3000) + '\n\n... [VISUALLY TRUNCATED FOR BROWSER PERFORMANCE] ...\n... [THE FULL 180KB+ RAW HTML STRING IS STILL SENT TO THE LLM IN THE BACKGROUND] ...'}
+                            </pre>
                         </div>
 
                         <div className="agent-dashboard__history">
