@@ -220,7 +220,7 @@ export default function AgentDashboard() {
         <div className="agent-dashboard">
             <div className="agent-dashboard__header">
                 <div className="agent-dashboard__brand">
-                    <span className="agent-dashboard__title">AgentNative</span>
+                    <span className="agent-dashboard__title">agentnative</span>
                 </div>
                 <div>
                     <button onClick={() => setCollapsed(true)}>—</button>
@@ -235,7 +235,7 @@ export default function AgentDashboard() {
                         }
                         return (
                             <div key={i} className={`agent-history-item ${item.success ? 'agent-history-item--success' : 'agent-history-item--error'}`}>
-                                <span className="agent-history-cmd">⚡ {item.message}</span>
+                                <span className="agent-history-cmd">{item.message}</span>
                             </div>
                         );
                     })}
