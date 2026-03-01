@@ -95,13 +95,6 @@ export default function HomePage() {
       {/* ── Hero ─────────────────────────────────────────────────── */}
       <section className="hp-hero">
         <div className="hp-hero-inner">
-          <div className="hp-hero-brand">
-            <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-              <polygon points="14,2 26,24 2,24" fill="#1a1a1a" />
-              <polygon points="14,7 23,22 11,22" fill="#4285f4" opacity="0.85" />
-            </svg>
-            <span>Agent Native</span>
-          </div>
           <h1 className="hp-hero-title">
             Experience accessibility<br />for the agent-first web
           </h1>
