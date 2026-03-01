@@ -10,6 +10,8 @@ import grad4 from './public/HomeGradients2/vurzie-kim-Sp2HQhVbdg0-unsplash.jpg';
 import annotationImg from './public/aleksandr-zaitsev-cRS3WCABL18-unsplash.jpg';
 import llmImg from './public/eugene-golovesov-wkb5BM3vlWY-unsplash.jpg';
 import zipImg from './public/amy-w-YbVCgsg84lA-unsplash.jpg';
+import beforeImg from './public/1.png';
+import afterImg from './public/2.png';
 import './HomePage.css';
 
 /* ── Content ──────────────────────────────────────────────────────────────── */
@@ -123,6 +125,37 @@ export default function HomePage() {
             {/* <a href="https://www.w3.org/TR/wai-aria-1.2/" target="_blank" rel="noreferrer" className="hp-btn-ghost">
               Explore WAI-ARIA
             </a> */}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Before / After ───────────────────────────────────────── */}
+      <section className="hp-compare">
+        <div className="hp-compare-inner">
+          <div className="hp-compare-left">
+            <p className="hp-eyebrow">Why AOM</p>
+            <h2 className="hp-compare-heading">
+              2 extra lines of code.<br />
+              10x less work for every<br />
+              AI agent that touches your site.
+            </h2>
+            <p className="hp-compare-body">
+              Today's agents scrape raw HTML — thousands of lines of CSS classes,
+              nested divs, and noise. AOM gives them a single, semantic wrapper
+              with everything they need to know.
+            </p>
+          </div>
+          <div className="hp-compare-right">
+            <div className="hp-compare-cards">
+              <div className="hp-compare-card">
+                <img src={beforeImg} alt="Before AOM" className="hp-compare-img" />
+                <p className="hp-compare-caption">What AI agents see <strong>today</strong> — raw HTML they have to scrape, parse, and guess their way through.</p>
+              </div>
+              <div className="hp-compare-card hp-compare-card--after">
+                <img src={afterImg} alt="After AOM" className="hp-compare-img" />
+                <p className="hp-compare-caption">What AI agents see <strong>with AOM</strong> — a single wrapper that tells them exactly what it does. No scraping. No guessing.</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
