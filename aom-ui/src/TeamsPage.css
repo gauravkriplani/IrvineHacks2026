@@ -2,14 +2,17 @@
 
 /* shell — extends hp-shell from HomePage.css */
 .tm-shell {
-  background: #f7f7f5;
   min-height: 100vh;
+  background:
+    /* Overlay opacity — raise toward 1.0 for more white, lower for more pattern */
+    linear-gradient(rgba(255,255,255,0.65), rgba(255,255,255,0.65)),
+    url('./public/magicpattern-87PP9Zd7MNo-unsplash.jpg') center / cover no-repeat;
 }
 
 /* ── Hero header ──────────────────────────────────────────────────────────── */
 .tm-header {
   text-align: center;
-  padding: 120px 24px 72px;
+  padding: 80px 24px 72px;   /* ← change 80px to move header up/down */
   max-width: 680px;
   margin: 0 auto;
 }
@@ -155,6 +158,11 @@
   background: #111;
   color: #fff;
   transform: scale(1.08);
+}
+
+/* ── Footer ───────────────────────────────────────────────────────────────── */
+.tm-shell .hp-footer {
+  background: #fff;
 }
 
 /* ── Responsive ───────────────────────────────────────────────────────────── */

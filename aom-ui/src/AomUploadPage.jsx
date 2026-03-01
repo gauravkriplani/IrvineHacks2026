@@ -254,7 +254,7 @@ export default function AomUploadPage() {
 
       <footer className="hp-footer">
         <span className="hp-footer-brand">Agent Native</span>
-        <span>&copy; 2026 IrvineHacks2026 Team</span>
+        <span className="hp-footer-copy">&copy; 2026 IrvineHacks2026 Team</span>
         <div className="hp-footer-links">
           <a href="https://github.com/gauravkriplani/IrvineHacks2026" target="_blank" rel="noreferrer">GitHub</a>
         </div>

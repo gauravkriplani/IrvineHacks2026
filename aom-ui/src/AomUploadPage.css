@@ -17,7 +17,8 @@
   align-items: center;
   padding: 64px 24px 80px;
   background:
-    linear-gradient(rgba(255,255,255,0.82), rgba(255,255,255,0.82)),
+    /* ↓ Overlay opacity — raise the 0.65 value toward 1.0 for more white, lower it for more pattern */
+    linear-gradient(rgba(255,255,255,0.65), rgba(255,255,255,0.65)),
     url('./public/magicpattern-87PP9Zd7MNo-unsplash.jpg') center / cover no-repeat;
 }
 
@@ -25,11 +26,12 @@
 .tk-header {
   text-align: center;
   max-width: 520px;
-  margin-bottom: 56px;
+  margin-bottom: 5%;
 }
 
 .tk-badge {
   display: inline-flex;
+  margin-top: 15%;
   align-items: center;
   gap: 6px;
   font-size: 12px;
@@ -125,10 +127,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   text-align: center;
   gap: 5px;
   border-radius: 22px;
   padding: 32px 28px;
+  min-height: 180px;
+  width: 180px;
+  box-sizing: border-box;
   border: 1.5px solid rgba(0, 0, 0, 0.10);
   background: #ffffff;
   box-shadow: 0 2px 14px rgba(0, 0, 0, 0.05);
@@ -138,7 +144,6 @@
 
 /* ── IO nodes ───────────────────────────────────────────────────────────── */
 .pl-node--io {
-  width: 180px;
   cursor: pointer;
 }
 .pl-node--io:hover:not(.pl-node--muted):not(.pl-node--output-ready) {
@@ -147,7 +152,7 @@
 }
 
 /* ── Stage nodes ────────────────────────────────────────────────────────── */
-.pl-node--stage { width: 180px; }
+.pl-node--stage { }
 
 /* ── States ─────────────────────────────────────────────────────────────── */
 .pl-node--muted {

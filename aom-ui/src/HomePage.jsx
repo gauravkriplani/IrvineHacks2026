@@ -141,9 +141,7 @@ export default function HomePage() {
               AI agent that touches your site.
             </h2>
             <p className="hp-compare-body">
-              Today's agents scrape raw HTML — thousands of lines of CSS classes,
-              nested divs, and noise. AOM gives them a single, semantic wrapper
-              with everything they need to know.
+              Drop your source on the left — collect your AOM wrappers on the right.
             </p>
           </div>
           <div className="hp-compare-right">
