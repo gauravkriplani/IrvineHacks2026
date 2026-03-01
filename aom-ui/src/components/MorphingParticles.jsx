@@ -83,8 +83,8 @@ const MorphingParticles = ({
             colors[i * 3 + 1] = col.g;
             colors[i * 3 + 2] = col.b;
 
-            // Smaller size now — elongation handled in shader
-            sizes[i] = Math.random() * 16 + 10;
+            // Smaller size now — elongation handled in shader (Made 3x smaller)
+            sizes[i] = (Math.random() * 16 + 10) / 3;
 
             // Random rotation per particle for rice-grain orientation
             rotations[i] = Math.random() * Math.PI;
@@ -102,7 +102,7 @@ const MorphingParticles = ({
         geometry.setAttribute('rotation', new THREE.BufferAttribute(rotations, 1));
 
         const material = new THREE.PointsMaterial({
-            size: 6,
+            size: 2, // Also decreased base size
             vertexColors: true,
             transparent: true,
             opacity: 0.8,
@@ -118,7 +118,7 @@ const MorphingParticles = ({
             );
             shader.vertexShader = shader.vertexShader.replace(
                 'gl_PointSize = size;',
-                'gl_PointSize = size * 3.0;\nvRotation = rotation;'
+                'gl_PointSize = size * 1.0;\nvRotation = rotation;' // Removed the 3.0x multiplier
             );
             shader.fragmentShader = shader.fragmentShader.replace(
                 'void main() {',
