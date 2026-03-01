@@ -367,7 +367,7 @@ export default function AgentDashboard({ isOpen, onToggle }) {
     if (!isOpen) {
         return (
             <button className="agent-dashboard-toggle" onClick={() => onToggle()}>
-                🤖 Agent API
+                <img src={logoImg} alt="Agent Native" className="agent-dashboard-toggle__logo" />
             </button>
         );
     }
