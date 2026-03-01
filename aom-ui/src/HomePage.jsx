@@ -102,10 +102,11 @@ export default function HomePage() {
       <section className="hp-hero">
         <div className="hp-hero-inner">
           <h1 className="hp-hero-title">
-            Experience accessibility<br />for the agent-first web
+            Reimagining the web for agent-first interactions.
+
           </h1>
           <p className="hp-hero-sub">
-            Auto-generate WAI-ARIA-compliant AOM wrappers for every component in your React codebase — in seconds, powered by AI.
+            Generate AOM wrappers for every web component. <br />AI-powered and ready in seconds.
           </p>
           <div className="hp-hero-btns">
             <Link
