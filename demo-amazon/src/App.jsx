@@ -10,6 +10,7 @@ import Checkout from './components/Checkout';
 import OrdersPage from './components/OrdersPage';
 import AddressModal from './components/AddressModal';
 import AgentDashboard from './components/AgentDashboard/AgentDashboard';
+import MorphingParticles from './components/MorphingParticles';
 import { AOMAction } from '../../aom-wrappers';
 import './App.css';
 
@@ -49,6 +50,8 @@ function App() {
   const [deliveryAddress, setDeliveryAddress] = useState(DEFAULT_ADDRESS);
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [recentOrders, setRecentOrders] = useState([]);
+  const [particleMode, setParticleMode] = useState('cursor');
+  const searchButtonRef = useRef(null);
 
   const updateFilter = (update) => setFilters(f => ({ ...f, ...update }));
 
@@ -102,7 +105,53 @@ function App() {
           onViewChange={handleViewChange}
           deliveryAddress={deliveryAddress}
           onAddressClick={() => setShowAddressModal(true)}
+          searchButtonRef={searchButtonRef}
         />
+
+        <MorphingParticles
+          mode={particleMode}
+          targetRef={searchButtonRef}
+        />
+
+        <div className="particle-toggle" style={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '80px',
+          zIndex: 1001,
+          display: 'flex',
+          gap: '10px'
+        }}>
+          <button
+            onClick={() => setParticleMode('cursor')}
+            className={particleMode === 'cursor' ? 'active' : ''}
+            style={{
+              padding: '8px 16px',
+              borderRadius: '20px',
+              border: 'none',
+              background: particleMode === 'cursor' ? '#FF4641' : '#676A72',
+              color: 'white',
+              cursor: 'pointer',
+              fontWeight: 'bold'
+            }}
+          >
+            Cursor Follow
+          </button>
+          <button
+            onClick={() => setParticleMode('border')}
+            className={particleMode === 'border' ? 'active' : ''}
+            style={{
+              padding: '8px 16px',
+              borderRadius: '20px',
+              border: 'none',
+              background: particleMode === 'border' ? '#FF4641' : '#676A72',
+              color: 'white',
+              cursor: 'pointer',
+              fontWeight: 'bold'
+            }}
+          >
+            Border Mode
+          </button>
+        </div>
 
         {/* Address modal */}
         {showAddressModal && (
