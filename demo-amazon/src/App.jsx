@@ -49,8 +49,13 @@ function App() {
   const [deliveryAddress, setDeliveryAddress] = useState(DEFAULT_ADDRESS);
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [recentOrders, setRecentOrders] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 20;
 
-  const updateFilter = (update) => setFilters(f => ({ ...f, ...update }));
+  const updateFilter = (update) => {
+    setFilters(f => ({ ...f, ...update }));
+    setCurrentPage(1);
+  };
 
   const handleViewChange = (v, product) => {
     setView(v);
@@ -97,7 +102,7 @@ function App() {
       <div className="app">
         <Header
           searchQuery={searchQuery}
-          onSearchChange={(q) => { setSearchQuery(q); setView('home'); setSelectedProduct(null); }}
+          onSearchChange={(q) => { setSearchQuery(q); setView('home'); setSelectedProduct(null); setCurrentPage(1); }}
           onCategoryFilter={(cat) => updateFilter({ category: cat })}
           onViewChange={handleViewChange}
           deliveryAddress={deliveryAddress}
@@ -211,11 +216,51 @@ function App() {
 
                 {/* Product grid */}
                 {filteredProducts.length > 0 ? (
-                  <div className="product-grid">
-                    {filteredProducts.map(p => (
-                      <ProductCard key={p.id} product={p} onProductClick={handleProductClick} />
-                    ))}
-                  </div>
+                  <>
+                    <div className="product-grid">
+                      {filteredProducts.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE).map(p => (
+                        <ProductCard key={p.id} product={p} onProductClick={handleProductClick} />
+                      ))}
+                    </div>
+
+                    {filteredProducts.length > ITEMS_PER_PAGE && (() => {
+                      const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
+                      return (
+                        <div className="pagination">
+                          <AOMAction id="pagination.prev" description="Go to previous page of products">
+                            <button
+                              className="pagination__btn"
+                              disabled={currentPage === 1}
+                              onClick={() => { setCurrentPage(p => Math.max(1, p - 1)); window.scrollTo(0, 0); }}>
+                              &lt; Previous
+                            </button>
+                          </AOMAction>
+
+                          <div className="pagination__pages">
+                            {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                              <AOMAction key={page} id={`pagination.page_${page}`} description={`Go to page ${page} of products`}>
+                                <button
+                                  className={`pagination__page-btn ${currentPage === page ? 'active' : ''}`}
+                                  onClick={() => { setCurrentPage(page); window.scrollTo(0, 0); }}
+                                >
+                                  {page}
+                                </button>
+                              </AOMAction>
+                            ))}
+                          </div>
+
+                          <AOMAction id="pagination.next" description="Go to next page of products">
+                            <button
+                              className="pagination__btn"
+                              disabled={currentPage === totalPages}
+                              onClick={() => { setCurrentPage(p => Math.min(totalPages, p + 1)); window.scrollTo(0, 0); }}>
+                              Next &gt;
+                            </button>
+                          </AOMAction>
+                        </div>
+                      );
+                    })()}
+                  </>
                 ) : (
                   <div className="no-results">
                     <div className="no-results__icon">🔍</div>

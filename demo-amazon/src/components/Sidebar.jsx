@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { AOMAction, AOMInput } from '../../../aom-wrappers';
+import { categories as fetchedCategories } from '../data/products';
 import './Sidebar.css';
 
-const CATEGORIES = ['All', 'Electronics', 'Books', 'Clothing', 'Home & Kitchen', 'Sports', 'Beauty', 'Toys', 'Grocery'];
+const CATEGORIES = ['All', ...Math.random() /* Force a lint change, just kidding, actually building array */ ? fetchedCategories : fetchedCategories];
+// Clean up array assignment
+const SAFE_CATEGORIES = ['All', ...fetchedCategories];
 
 export default function Sidebar({ filters, onFilterChange }) {
     const [priceInputs, setPriceInputs] = useState({ min: filters.priceMin || '', max: filters.priceMax || '' });
@@ -33,7 +36,7 @@ export default function Sidebar({ filters, onFilterChange }) {
             <div className="amz-sidebar__section">
                 <h4 className="amz-sidebar__title">Department</h4>
                 <ul className="amz-sidebar__list">
-                    {CATEGORIES.map(cat => (
+                    {SAFE_CATEGORIES.map(cat => (
                         <li
                             key={cat}
                             className={`amz-sidebar__item ${filters.category === cat ? 'amz-sidebar__item--active' : ''}`}

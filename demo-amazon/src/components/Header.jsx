@@ -21,7 +21,8 @@ const LocationIcon = () => (
     </svg>
 );
 
-const CATEGORIES = ['All', 'Electronics', 'Books', 'Clothing', 'Home & Kitchen', 'Sports', 'Beauty', 'Toys', 'Grocery'];
+import { categories as fetchedCategories } from '../data/products';
+const CATEGORIES = ['All', ...fetchedCategories];
 
 export default function Header({ searchQuery, onSearchChange, onCategoryFilter, onViewChange, deliveryAddress, onAddressClick, searchButtonRef }) {
     const { cartCount } = useCart();

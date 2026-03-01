@@ -105,11 +105,12 @@ A strict singleton exposed on `window.__AOM__` that serves as the bridge between
 - Replaces brittle DOM querying with guaranteed JavaScript event execution.
 
 ### 4.3 Agent Dashboard & LLM Chat Integration
-A floating dashboard injected into target applications (e.g., `@dummy-amazon`) to visualize and test agent capabilities.
+A sidebar dashboard injected into target applications (e.g., `@demo-amazon`) to visualize and test agent capabilities.
 - Displays the live, dynamic `agentState` JSON.
-- Features a Natural Language Chat Interface powered by OpenAI Whisper/GPT-4o-mini.
+- Features a Natural Language Chat Interface powered by Groq's `llama-3.3-70b-versatile` model.
 - Automatically translates plain English requests (e.g., "Add airpods to cart") into deterministic AOM commands (e.g., `window.__AOM__.execute('product.1.add_to_cart')`).
-- Utilizes a Vite API proxy to cleanly bypass browser CORS restrictions during development.
+- Securely pulls API keys from a local `.env` file (`VITE_GROQ_KEY`) to bypass interactive configuration.
+- **Multi-Step Memory Loop:** Supports autonomous, multi-step navigation. The agent fetches the UI state, predicts a step, executes it, waits for the DOM to update, and dynamically re-prompts itself with the new UI state until the task is marked completed (`task_completed: true`). Does not require single-shot DOM generation.
 
 ---
 
