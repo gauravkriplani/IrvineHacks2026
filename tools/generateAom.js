@@ -12,6 +12,108 @@ function deterministicId(filePath, line, name) {
   return h.digest('hex').slice(0, 12)
 }
 
+// ── High-risk detection ────────────────────────────────────────────────────
+// Keywords that indicate financial transactions, destructive actions, or
+// anything an AI agent should pause and verify before executing.
+const HIGH_RISK_TEXT_PATTERNS = [
+  // financial / purchasing
+  /\bpay(ment|ments|ing|now)?\b/i,
+  /\bpurchas(e|ing)\b/i,
+  /\bcheck\s*out\b/i,
+  /\bbuy\b/i,
+  /\bsubscrib(e|ing|tion)\b/i,
+  /\border\s*(now|confirm)?\b/i,
+  /\bplace\s*order\b/i,
+  /\badd\s*to\s*cart\b/i,
+  /\bcharg(e|ing)\b/i,
+  /\bbilling\b/i,
+  /\brefund\b/i,
+  /\btransfer\b/i,
+  /\bwithdraw\b/i,
+  /\bdonat(e|ion)\b/i,
+  /\btip\b/i,
+  /\binvoice\b/i,
+  /\bpric(e|ing)\b/i,
+  /\bcredit\s*card\b/i,
+  /\bcard\s*number\b/i,
+  /\bcvv\b/i,
+  // destructive / irreversible
+  /\bdelete\b/i,
+  /\bremove\b/i,
+  /\bdestroy\b/i,
+  /\bpermanent(ly)?\b/i,
+  /\birreversible\b/i,
+  /\bcancel\s*(plan|subscription|account)\b/i,
+  /\bdeactivate\b/i,
+  /\bclose\s*account\b/i,
+  // sensitive data
+  /\bpassword\b/i,
+  /\bsocial\s*security\b/i,
+  /\bssn\b/i,
+  /\bbank\s*account\b/i,
+]
+
+const HIGH_RISK_HANDLERS = [
+  'onCheckout', 'onPurchase', 'onBuy', 'onPay', 'onPayment',
+  'onSubscribe', 'onOrder', 'onPlaceOrder', 'onConfirmOrder',
+  'onDelete', 'onRemove', 'onDestroy', 'onDeactivate',
+  'onTransfer', 'onWithdraw', 'onRefund', 'onDonate',
+]
+
+const HIGH_RISK_INPUT_TYPES = [
+  'credit-card', 'payment', 'card-number', 'cvv', 'ssn',
+]
+
+/**
+ * Returns true if any text content, attribute value, handler name, or input
+ * type on the node matches a high-risk pattern.
+ */
+function isHighRisk(jsxNode) {
+  const attrs = jsxNode.openingElement.attributes || []
+
+  for (const a of attrs) {
+    if (a.type !== 'JSXAttribute' || !a.name) continue
+    const attrName = a.name.name || ''
+
+    // Check handler names
+    if (HIGH_RISK_HANDLERS.includes(attrName)) return true
+
+    // Check string attribute values (aria-label, placeholder, title, name, id, type, value)
+    if (a.value && a.value.type === 'StringLiteral') {
+      const val = a.value.value
+      if (attrName === 'type' && HIGH_RISK_INPUT_TYPES.includes(val.toLowerCase())) return true
+      if (HIGH_RISK_TEXT_PATTERNS.some(rx => rx.test(val))) return true
+    }
+
+    // Check JSX expression attribute values (e.g. onClick={handlePurchase})
+    if (a.value && a.value.type === 'JSXExpressionContainer') {
+      const expr = a.value.expression
+      if (expr && expr.type === 'Identifier') {
+        if (HIGH_RISK_TEXT_PATTERNS.some(rx => rx.test(expr.name))) return true
+        if (HIGH_RISK_HANDLERS.some(h => expr.name.toLowerCase().includes(h.toLowerCase().replace(/^on/,'')))) return true
+      }
+    }
+  }
+
+  // Check inline text children
+  function getTextContent(node) {
+    if (!node) return ''
+    if (node.type === 'StringLiteral' || node.type === 'JSXText') return node.value || ''
+    if (node.type === 'JSXElement') {
+      return (node.children || []).map(getTextContent).join(' ')
+    }
+    if (node.type === 'JSXExpressionContainer' && node.expression) {
+      if (node.expression.type === 'StringLiteral') return node.expression.value
+    }
+    return ''
+  }
+  const text = getTextContent(jsxNode)
+  if (HIGH_RISK_TEXT_PATTERNS.some(rx => rx.test(text))) return true
+
+  return false
+}
+// ──────────────────────────────────────────────────────────────────────────
+
 function isInteractiveJSX(node) {
   if (!node || node.type !== 'JSXElement') return false
   const name = node.openingElement.name
@@ -74,7 +176,16 @@ export async function generateAomFromDir(srcDir, outDir) {
           }
         }
         const actionId = `${rel.replace(/\\/g,'/')}:${deterministicId(rel, loc, tag)}`
-        manifest.actions.push({ action_id: actionId, file: rel, component: '', tag, handler, description: label || `Interactive ${tag}`, metadata: { line: loc } })
+        manifest.actions.push({
+          action_id: actionId,
+          file: rel,
+          component: '',
+          tag,
+          handler,
+          description: label || `Interactive ${tag}`,
+          needs_review: isHighRisk(jsxNode),   // ← true if financial/high-risk signals detected
+          metadata: { line: loc },
+        })
       }
     })
   }
