@@ -240,9 +240,8 @@
 }
 
 .agent-history-chat--user {
-    background: linear-gradient(135deg, #10b981, #34d399);
-    /* Pastel green gradient */
-    color: #ffffff;
+    background: rgba(0, 0, 0, 0.05);
+    color: #000000;
     align-self: flex-end;
     border-bottom-right-radius: 4px;
 }
@@ -414,15 +413,14 @@
 .agent-working-blob {
     width: 20px;
     height: 20px;
-    background: linear-gradient(135deg, #3b82f6, #10b981, #0ea5e9);
-    background-size: 200% 200%;
+    background: #000000;
     border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
-    animation: morph 3s linear infinite, glow 2s ease-in-out infinite, gradient-shift 4s ease infinite;
-    box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+    animation: morph 2s linear infinite, glow 2s ease-in-out infinite;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
 .agent-working-text {
-    background: linear-gradient(90deg, #94a3b8 0%, #f8fafc 50%, #94a3b8 100%);
+    background: linear-gradient(90deg, #000000 0%, #666666 50%, #000000 100%);
     background-size: 200% 100%;
     -webkit-background-clip: text;
     background-clip: text;
@@ -516,12 +514,12 @@
     0%,
     100% {
         transform: scale(1);
-        box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
     }
 
     50% {
         transform: scale(1.15);
-        box-shadow: 0 0 16px rgba(16, 185, 129, 0.6);
+        box-shadow: 0 0 16px rgba(0, 0, 0, 0.5);
     }
 }
 
