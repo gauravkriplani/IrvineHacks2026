@@ -237,6 +237,14 @@ export default function AgentDashboard() {
                             </div>
                         );
                     })}
+
+                    {isProcessing && (
+                        <div className="agent-working-indicator">
+                            <span className="agent-working-blob"></span>
+                            <span className="agent-working-text">Agent is working...</span>
+                        </div>
+                    )}
+
                     <div ref={historyEndRef} />
                 </div>
 
