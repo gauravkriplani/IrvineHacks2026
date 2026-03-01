@@ -99,6 +99,19 @@ a {
   color: rgba(255, 255, 255, 0.95);
 }
 
+/* In island mode, drop absolute centering — let flexbox space-between handle it */
+.hp-nav--island .hp-nav-center {
+  position: static;
+  transform: none;
+  gap: 22px;
+}
+
+/* Center all content when in island state */
+.hp-nav--island {
+  justify-content: center;
+  gap: 28px;
+}
+
 .hp-nav-brand {
   display: flex;
   align-items: center;
