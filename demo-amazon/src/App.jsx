@@ -49,6 +49,7 @@ function App() {
   const [deliveryAddress, setDeliveryAddress] = useState(DEFAULT_ADDRESS);
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [recentOrders, setRecentOrders] = useState([]);
+  const [isAgentOpen, setIsAgentOpen] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 20;
 
@@ -135,7 +136,7 @@ function App() {
 
   return (
     <CartProvider>
-      <div className="app">
+      <div className="app" style={{ paddingRight: isAgentOpen ? '400px' : '0', transition: 'padding-right 0.3s ease' }}>
         <Header
           searchQuery={searchQuery}
           onSearchChange={(q) => { setSearchQuery(q); setView('home'); setSelectedProduct(null); setCurrentPage(1); }}
@@ -310,7 +311,7 @@ function App() {
           )}
         </div>
 
-        <AgentDashboard />
+        <AgentDashboard isOpen={isAgentOpen} onToggle={() => setIsAgentOpen(!isAgentOpen)} />
       </div>
     </CartProvider>
   );

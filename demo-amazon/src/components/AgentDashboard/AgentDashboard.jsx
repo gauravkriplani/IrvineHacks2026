@@ -57,8 +57,7 @@ Example response for just clicking a button:
 }
 `;
 
-export default function AgentDashboard() {
-    const [collapsed, setCollapsed] = useState(false);
+export default function AgentDashboard({ isOpen, onToggle }) {
     const [agentState, setAgentState] = useState({});
     const [cmdInput, setCmdInput] = useState(''); // Renamed from 'command'
     const [history, setHistory] = useState([]);
@@ -365,9 +364,9 @@ export default function AgentDashboard() {
         }
     };
 
-    if (collapsed) {
+    if (!isOpen) {
         return (
-            <button className="agent-dashboard-toggle" onClick={() => setCollapsed(false)}>
+            <button className="agent-dashboard-toggle" onClick={() => onToggle()}>
                 🤖 Agent API
             </button>
         );
@@ -391,7 +390,7 @@ export default function AgentDashboard() {
                     <span className="agent-dashboard__title">Agent Native</span>
                 </div>
                 <div>
-                    <button className="agent-dashboard__close" onClick={() => setCollapsed(true)}>✕</button>
+                    <button className="agent-dashboard__close" onClick={() => onToggle()}>✕</button>
                 </div>
             </div>
 
