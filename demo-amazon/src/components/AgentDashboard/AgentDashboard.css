@@ -33,11 +33,26 @@
     background: rgba(255, 255, 255, 0.95);
     color: #1e293b;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    border-left: 1px solid rgba(0, 0, 0, 0.1);
+    border-left: 2px solid rgba(16, 185, 129, 0.5);
+    /* Matching send button border */
+    box-shadow: -4px 0 20px rgba(16, 185, 129, 0.1);
+    /* Subtle green glow */
     z-index: 9999;
     display: flex;
     flex-direction: column;
-    animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1), subtlePulse 3s infinite alternate;
+}
+
+@keyframes subtlePulse {
+    0% {
+        box-shadow: -4px 0 15px rgba(16, 185, 129, 0.05);
+        border-left-color: rgba(16, 185, 129, 0.3);
+    }
+
+    100% {
+        box-shadow: -4px 0 25px rgba(16, 185, 129, 0.2);
+        border-left-color: rgba(16, 185, 129, 0.8);
+    }
 }
 
 @keyframes slideInRight {
@@ -54,23 +69,42 @@
 
 .agent-dashboard__header {
     background: rgba(255, 255, 255, 0.5);
-    /* Reduced transparency */
     padding: 14px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
 }
 
-.agent-dashboard__header h3 {
-    margin: 0;
-    font-size: 14px;
-    font-weight: 600;
-    color: #1e293b;
-    letter-spacing: 0.3px;
+/* Subtle shortened divider */
+.agent-dashboard__header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 5%;
+    right: 5%;
+    height: 2px;
+    background: rgba(16, 185, 129, 0.2);
+}
+
+.agent-dashboard__brand {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 10px;
+}
+
+.agent-dashboard__logo {
+    height: 32px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+}
+
+.agent-dashboard__title {
+    font-size: 17px;
+    font-weight: 700;
+    color: rgba(16, 185, 129, 0.8);
+    letter-spacing: -0.3px;
 }
 
 .agent-dashboard__header>div {
@@ -183,8 +217,8 @@
 }
 
 .agent-history-chat--user {
-    background: linear-gradient(135deg, #0ea5e9, #3b82f6);
-    /* Gradient background for user bubble */
+    background: linear-gradient(135deg, #10b981, #34d399);
+    /* Pastel green gradient */
     color: #ffffff;
     align-self: flex-end;
     border-bottom-right-radius: 4px;
@@ -255,9 +289,10 @@
 }
 
 .agent-dashboard__form input:focus {
-    border-color: #3b82f6;
-    background: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    border-color: #34d399;
+    /* Pastel green focus */
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 0 0 2px rgba(52, 211, 153, 0.2);
 }
 
 .agent-dashboard__form input::placeholder {
@@ -265,25 +300,29 @@
 }
 
 .agent-dashboard__form button {
-    background: #1e293b;
-    color: #f8fafc;
+    background: #10b981;
+    /* Pastel green button */
+    color: #ffffff;
     border: none;
     padding: 0 20px;
     border-radius: 24px;
     cursor: pointer;
     font-weight: 600;
     font-size: 13.5px;
-    transition: all 0.2s;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
 }
 
 .agent-dashboard__form button:hover:not(:disabled) {
-    background: #0f172a;
-    transform: translateY(-1px);
+    background: #059669;
+    /* Slightly darker green on hover */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3);
 }
 
 .agent-dashboard__form button:active:not(:disabled) {
     transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
 }
 
 .agent-dashboard__form button:disabled {

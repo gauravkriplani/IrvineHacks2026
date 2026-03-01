@@ -158,18 +158,18 @@ export default function AgentDashboard() {
                         if (action_type === 'fill') {
                             if (action.kind === 'input') {
                                 window.__AOM__.fill(action_id, value || '');
-                                execMessage = `window.__AOM__.fill('${action_id}', '${value || ''}')`;
+                                execMessage = `Typed "${value || ''}" into ${action.description || action_id}`;
                             } else {
                                 // tried to fill a button
                                 window.__AOM__.execute(action_id);
-                                execMessage = `window.__AOM__.execute('${action_id}') (fallback from fill)`;
+                                execMessage = `Clicked ${action.description || action_id} (fallback from fill)`;
                             }
                         } else if (action.type === 'navigate') {
                             window.__AOM__.navigate(action_id);
-                            execMessage = `window.__AOM__.navigate('${action_id}')`;
+                            execMessage = `Navigated to ${action.description || action_id}`;
                         } else {
                             window.__AOM__.execute(action_id);
-                            execMessage = `window.__AOM__.execute('${action_id}')`;
+                            execMessage = `Clicked ${action.description || action_id}`;
                         }
 
                         // Update UI synchronously inside the loop
@@ -219,7 +219,9 @@ export default function AgentDashboard() {
     return (
         <div className="agent-dashboard">
             <div className="agent-dashboard__header">
-                <h3>Agent Layer</h3>
+                <div className="agent-dashboard__brand">
+                    <span className="agent-dashboard__title">AgentNative</span>
+                </div>
                 <div>
                     <button onClick={() => setCollapsed(true)}>—</button>
                 </div>

@@ -75,10 +75,8 @@ function App() {
   };
 
   const filteredProducts = useMemo(() => {
+    // Phase 1: Filter only by actual hard filters (category, price, etc). DO NOT filter by search query yet.
     let list = products.filter(p => {
-      if (searchQuery && !p.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-        !p.category.toLowerCase().includes(searchQuery.toLowerCase()) &&
-        !p.brand.toLowerCase().includes(searchQuery.toLowerCase())) return false;
       if (filters.category !== 'All' && p.category !== filters.category) return false;
       if (filters.brand && p.brand !== filters.brand) return false;
       if (p.price < filters.priceMin) return false;
@@ -88,12 +86,50 @@ function App() {
       return true;
     });
 
+    // Phase 2: If there's a search query, score every remaining item. 
+    // We never return false here, we just score them so the most relevant bubble to the top.
+    if (searchQuery) {
+      const queryWords = searchQuery.toLowerCase().split(' ').filter(w => w.trim().length > 0);
+
+      list = list.map(p => {
+        let sc = 0;
+        const nameLc = p.name.toLowerCase();
+        const catLc = p.category.toLowerCase();
+        const brandLc = p.brand.toLowerCase();
+
+        for (const w of queryWords) {
+          if (nameLc.includes(w)) sc += 3;
+          if (catLc.includes(w)) sc += 2;
+          if (brandLc.includes(w)) sc += 1;
+        }
+
+        // Slight boost for exact substring matches to preserve expected behavior
+        if (nameLc.includes(searchQuery.toLowerCase())) sc += 5;
+
+        return { ...p, relevanceScore: sc };
+      });
+
+      // Sort by relevance (highest score first)
+      list.sort((a, b) => b.relevanceScore - a.relevanceScore);
+
+      // If the sort option isn't 'featured', the user explicitly asked to sort by price/rating etc, 
+      // so we will respect that overriding the relevance sort below.
+    }
+
+    // Phase 3: Apply user-selected sorting methods (overrides relevance sort if not 'featured')
     switch (sort) {
       case 'price-asc': list = [...list].sort((a, b) => a.price - b.price); break;
       case 'price-desc': list = [...list].sort((a, b) => b.price - a.price); break;
       case 'rating': list = [...list].sort((a, b) => b.rating - a.rating); break;
       case 'newest': list = [...list].reverse(); break;
+      case 'featured':
+        // If sorting by featured AND we aren't already sorted by relevance query, sort by review/rating combo
+        if (!searchQuery) {
+          list = [...list].sort((a, b) => (b.rating * b.reviewCount) - (a.rating * a.reviewCount));
+        }
+        break;
     }
+
     return list;
   }, [searchQuery, filters, sort]);
 

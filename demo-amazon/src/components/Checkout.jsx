@@ -5,7 +5,7 @@ import './Checkout.css';
 
 const STEPS = ['Shipping', 'Payment', 'Review', 'Confirmation'];
 
-const DEFAULT_PAY = { cardNum: '4111 1111 1111 1111', expiry: '12/27', cvv: '123', nameOnCard: 'John Doe' };
+const DEFAULT_PAY = { cardNum: '', expiry: '', cvv: '', nameOnCard: '' };
 
 export default function Checkout({ onBack, deliveryAddress, onAddressChange, onOrderPlaced }) {
     const { cart, cartTotal, cartCount, clearCart } = useCart();
