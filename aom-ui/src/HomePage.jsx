@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import MorphingParticles from './components/MorphingParticles';
+import TiltCard from './components/TiltCard';
 import logoImg from './public/logo.webp';
 import greenImg from './public/green.jpeg';
 import grad1 from './public/HomeGradients2/aga-silva-pgoKgrsQr38-unsplash.jpg';
@@ -96,8 +97,9 @@ export default function HomePage() {
           Agent Native
         </Link>
         <div className="hp-nav-center">
-          <Link to="/toolkit" className="hp-nav-link">Product</Link>
+          <a href="https://www.w3.org/TR/wai-aria-1.2/" className="hp-nav-link" target="_blank" rel="noreferrer">Product</a>
           <a href="https://github.com/gauravkriplani/IrvineHacks2026" className="hp-nav-link" target="_blank" rel="noreferrer">GitHub</a>
+          <a href="https://www.w3.org/TR/wai-aria-1.2/" className="hp-nav-link" target="_blank" rel="noreferrer">WAI-ARIA</a>
           <Link to="/team" className="hp-nav-link">About Us</Link>
         </div>
         {/* <Link to="/toolkit" className="hp-nav-cta">Try the Toolkit</Link> */}
@@ -147,14 +149,14 @@ export default function HomePage() {
           </div>
           <div className="hp-compare-right">
             <div className="hp-compare-cards">
-              <div className="hp-compare-card">
+              <TiltCard className="hp-compare-card" maxTilt={6}>
                 <img src={beforeImg} alt="Before AOM" className="hp-compare-img" />
                 <p className="hp-compare-caption">What AI agents see <strong>today</strong> — raw HTML they have to scrape, parse, and guess their way through.</p>
-              </div>
-              <div className="hp-compare-card hp-compare-card--after">
+              </TiltCard>
+              <TiltCard className="hp-compare-card hp-compare-card--after" maxTilt={6}>
                 <img src={afterImg} alt="After AOM" className="hp-compare-img" />
                 <p className="hp-compare-caption">What AI agents see <strong>with AOM</strong> — a single wrapper that tells them exactly what it does. No scraping. No guessing.</p>
-              </div>
+              </TiltCard>
             </div>
           </div>
         </div>
