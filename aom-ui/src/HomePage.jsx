@@ -1,6 +1,10 @@
 import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import MorphingParticles from './components/MorphingParticles';
+import greenImg from './public/green.jpeg';
+import annotationImg from './public/aleksandr-zaitsev-cRS3WCABL18-unsplash.jpg';
+import llmImg from './public/eugene-golovesov-wkb5BM3vlWY-unsplash.jpg';
+import zipImg from './public/amy-w-YbVCgsg84lA-unsplash.jpg';
 import './HomePage.css';
 
 /* ── Content ──────────────────────────────────────────────────────────────── */
@@ -8,24 +12,28 @@ const FEATURES = [
   {
     icon: '⬡',
     accent: '#4285F4',
+    image: greenImg,
     title: 'AOM Wrapper Generation',
     desc: 'Upload your React ZIP and receive fully-compliant Accessibility Object Model wrapper components auto-generated for every interactive element.',
   },
   {
     icon: '◎',
     accent: '#8430CE',
+    image: annotationImg,
     title: 'Inline Source Annotation',
     desc: 'The AI scans your components and injects ARIA labels, roles, and descriptions directly — no manual markup required.',
   },
   {
     icon: '✦',
     accent: '#E84683',
+    image: llmImg,
     title: 'LLM-Powered Intelligence',
     desc: 'Backed by large language models that understand your component hierarchy and produce standards-compliant output aligned with WAI-ARIA 1.2.',
   },
   {
     icon: '◈',
     accent: '#34A853',
+    image: zipImg,
     title: 'Instant ZIP Output',
     desc: 'Receive a ready-to-use ZIP in seconds containing all generated or annotated files, ready to drop into your codebase.',
   },
@@ -62,9 +70,9 @@ export default function HomePage() {
       <MorphingParticles
         mode={particleMode}
         targetRef={ctaRef}
-        color1="#676A72"
-        color2="#FF4641"
-        color3="#346BF1"
+        color1="#2D6A4F"
+        color2="#52B788"
+        color3="#95D5B2"
       />
 
       {/* ── Nav ──────────────────────────────────────────────────── */}
@@ -119,15 +127,20 @@ export default function HomePage() {
 
       {/* ── Features ─────────────────────────────────────────────── */}
       <section className="hp-features">
-        <p className="hp-eyebrow">What it does</p>
         <h2 className="hp-section-title">
-          Built for accessibility.<br />Built for agents.
+          Built for accessibility.<br /><span style={{color: '#0e0e0e'}}>Built for agents.</span>
         </h2>
+        <p className="hp-features-sub">
+          Choose the output that fits your workflow — auto-generated AOM wrappers, inline ARIA annotations, or a fully annotated ZIP ready to ship.
+        </p>
         <div className="hp-features-grid">
           {FEATURES.map(f => (
             <div className="hp-feat-card" key={f.title}>
               <div className="hp-feat-preview" style={{'--feat-accent': f.accent}}>
-                <span className="hp-feat-preview-icon">{f.icon}</span>
+                {f.image
+                  ? <img src={f.image} alt={f.title} className="hp-feat-preview-img" />
+                  : <span className="hp-feat-preview-icon">{f.icon}</span>
+                }
               </div>
               <div className="hp-feat-content">
                 <div className="hp-feat-title">{f.title}</div>
