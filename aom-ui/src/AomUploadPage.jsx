@@ -152,6 +152,7 @@ export default function AomUploadPage() {
           <a href="https://www.w3.org/TR/wai-aria-1.2/" className="hp-nav-link" target="_blank" rel="noreferrer">Product</a>
           <a href="https://github.com/gauravkriplani/IrvineHacks2026" className="hp-nav-link" target="_blank" rel="noreferrer">GitHub</a>
           <a href="https://www.w3.org/TR/wai-aria-1.2/" className="hp-nav-link" target="_blank" rel="noreferrer">WAI-ARIA</a>
+          <Link to="/team" className="hp-nav-link">About Us</Link>
         </div>
         {/* <Link to="/" className="hp-nav-cta">← Back to Home</Link> */}
       </nav>
