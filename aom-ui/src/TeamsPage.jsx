@@ -91,7 +91,7 @@ export default function TeamsPage() {
           Agent Native
         </Link>
         <div className="hp-nav-center">
-          <a href="https://www.w3.org/TR/wai-aria-1.2/" className="hp-nav-link" target="_blank" rel="noreferrer">Product</a>
+          <Link to="/toolkit" className="hp-nav-link">Product</Link>
           <a href="https://github.com/gauravkriplani/IrvineHacks2026" className="hp-nav-link" target="_blank" rel="noreferrer">GitHub</a>
           <Link to="/team" className="hp-nav-link">About Us</Link>
         </div>

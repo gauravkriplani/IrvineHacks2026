@@ -64,7 +64,8 @@ a {
 /* ── Dynamic Island (scrolled) state ────────────────────────────────────── */
 .hp-nav--island {
   top: 14px;
-  width: 560px;
+  width: fit-content;
+  min-width: 480px;
   max-width: calc(100vw - 40px);
   height: 50px;
   padding: 0 22px;
@@ -121,6 +122,7 @@ a {
   display: flex;
   align-items: center;
   gap: 32px;
+  flex-wrap: nowrap;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -131,6 +133,8 @@ a {
   font-weight: 500;
   color: rgba(26, 26, 26, 0.65);
   transition: color 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .hp-nav-link:hover {
