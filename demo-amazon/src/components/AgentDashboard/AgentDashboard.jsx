@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import AOMRegistry from '../../../../aom-wrappers/AOMRegistry';
 import logoImg from '../../assets/logo.webp';
+import MorphingParticles from '../MorphingParticles/MorphingParticles';
 import './AgentDashboard.css';
 
 function MicIcon() {
@@ -371,6 +372,14 @@ export default function AgentDashboard() {
 
     return (
         <div className="agent-dashboard">
+            <div className="agent-dashboard-bg" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: -1 }}>
+                <MorphingParticles
+                    targetRef={{ current: null }}
+                    isHovered={false}
+                    ambientScale={0.8}
+                    particleColor="#34d399"
+                />
+            </div>
             <div className="agent-dashboard__header">
                 <div className="agent-dashboard__brand">
                     <img src={logoImg} alt="Agent Native logo" className="agent-dashboard__logo" />
