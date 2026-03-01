@@ -7,21 +7,25 @@ import './HomePage.css';
 const FEATURES = [
   {
     icon: '⬡',
+    accent: '#4285F4',
     title: 'AOM Wrapper Generation',
     desc: 'Upload your React ZIP and receive fully-compliant Accessibility Object Model wrapper components auto-generated for every interactive element.',
   },
   {
     icon: '◎',
+    accent: '#8430CE',
     title: 'Inline Source Annotation',
     desc: 'The AI scans your components and injects ARIA labels, roles, and descriptions directly — no manual markup required.',
   },
   {
     icon: '✦',
+    accent: '#E84683',
     title: 'LLM-Powered Intelligence',
     desc: 'Backed by large language models that understand your component hierarchy and produce standards-compliant output aligned with WAI-ARIA 1.2.',
   },
   {
-    icon: '⬡',
+    icon: '◈',
+    accent: '#34A853',
     title: 'Instant ZIP Output',
     desc: 'Receive a ready-to-use ZIP in seconds containing all generated or annotated files, ready to drop into your codebase.',
   },
@@ -73,11 +77,11 @@ export default function HomePage() {
           Agent Native
         </Link>
         <div className="hp-nav-center">
-          <Link to="/toolkit" className="hp-nav-link">Product</Link>
+          <a href="https://www.w3.org/TR/wai-aria-1.2/" className="hp-nav-link" target="_blank" rel="noreferrer">Product</a>
           <a href="https://github.com/gauravkriplani/IrvineHacks2026" className="hp-nav-link" target="_blank" rel="noreferrer">GitHub</a>
           <a href="https://www.w3.org/TR/wai-aria-1.2/" className="hp-nav-link" target="_blank" rel="noreferrer">WAI-ARIA</a>
         </div>
-        <Link to="/toolkit" className="hp-nav-cta">Try the Toolkit</Link>
+        {/* <Link to="/toolkit" className="hp-nav-cta">Try the Toolkit</Link> */}
       </nav>
 
       {/* ── Hero ─────────────────────────────────────────────────── */}
@@ -106,9 +110,9 @@ export default function HomePage() {
             >
               Try the Toolkit
             </Link>
-            <a href="https://www.w3.org/TR/wai-aria-1.2/" target="_blank" rel="noreferrer" className="hp-btn-ghost">
+            {/* <a href="https://www.w3.org/TR/wai-aria-1.2/" target="_blank" rel="noreferrer" className="hp-btn-ghost">
               Explore WAI-ARIA
-            </a>
+            </a> */}
           </div>
         </div>
       </section>
@@ -122,9 +126,13 @@ export default function HomePage() {
         <div className="hp-features-grid">
           {FEATURES.map(f => (
             <div className="hp-feat-card" key={f.title}>
-              <div className="hp-feat-icon">{f.icon}</div>
-              <div className="hp-feat-title">{f.title}</div>
-              <div className="hp-feat-desc">{f.desc}</div>
+              <div className="hp-feat-preview" style={{'--feat-accent': f.accent}}>
+                <span className="hp-feat-preview-icon">{f.icon}</span>
+              </div>
+              <div className="hp-feat-content">
+                <div className="hp-feat-title">{f.title}</div>
+                <div className="hp-feat-desc">{f.desc}</div>
+              </div>
             </div>
           ))}
         </div>

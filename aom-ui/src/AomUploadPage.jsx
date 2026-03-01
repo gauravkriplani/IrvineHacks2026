@@ -151,10 +151,11 @@ export default function AomUploadPage() {
           Agent Native
         </Link>
         <div className="hp-nav-center">
-          <Link to="/" className="hp-nav-link">Home</Link>
+          <a href="https://www.w3.org/TR/wai-aria-1.2/" className="hp-nav-link" target="_blank" rel="noreferrer">Product</a>
           <a href="https://github.com/gauravkriplani/IrvineHacks2026" className="hp-nav-link" target="_blank" rel="noreferrer">GitHub</a>
+          <a href="https://www.w3.org/TR/wai-aria-1.2/" className="hp-nav-link" target="_blank" rel="noreferrer">WAI-ARIA</a>
         </div>
-        <Link to="/" className="hp-nav-cta">← Back to Home</Link>
+        {/* <Link to="/" className="hp-nav-cta">← Back to Home</Link> */}
       </nav>
 
       <main className="tk-body">
