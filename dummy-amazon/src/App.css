@@ -31,6 +31,8 @@ ul {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  padding-right: 400px;
+  /* Make room to the right for the Agent Sidebar */
 }
 
 .app-body {
