@@ -218,7 +218,7 @@
 }
 
 .agent-history-cmd {
-    color: #059669;
+    color: #000000;
     /* Dark emerald for visibility on light glass */
     font-size: 11.5px;
     font-weight: 400;
@@ -444,7 +444,7 @@
 
 .agent-approval-header {
     font-weight: 500;
-    color: #059669;
+    color: #000000;
     margin-bottom: 8px;
     display: flex;
     align-items: center;
@@ -454,7 +454,7 @@
 
 .agent-approval-desc {
     font-size: 13.5px;
-    color: #475569;
+    color: #000000;
     margin-bottom: 12px;
     line-height: 1.4;
 }
