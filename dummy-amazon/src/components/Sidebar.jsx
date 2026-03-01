@@ -34,18 +34,19 @@ export default function Sidebar({ filters, onFilterChange }) {
                 <h4 className="amz-sidebar__title">Department</h4>
                 <ul className="amz-sidebar__list">
                     {CATEGORIES.map(cat => (
-                        <AOMAction
+                        <li
                             key={cat}
-                            id={`filter.category.${cat.replace(/[^a-zA-Z]/g, '').toLowerCase()}`}
-                            description={`Filter by category: ${cat}`}
+                            className={`amz-sidebar__item ${filters.category === cat ? 'amz-sidebar__item--active' : ''}`}
                         >
-                            <li
-                                className={`amz-sidebar__item ${filters.category === cat ? 'amz-sidebar__item--active' : ''}`}
-                                onClick={() => onFilterChange({ category: cat })}
+                            <AOMAction
+                                id={`filter.category.${cat.replace(/[^a-zA-Z]/g, '').toLowerCase()}`}
+                                description={`Filter by category: ${cat}`}
                             >
-                                {cat}
-                            </li>
-                        </AOMAction>
+                                <span onClick={() => onFilterChange({ category: cat })} style={{ display: 'block', width: '100%' }}>
+                                    {cat}
+                                </span>
+                            </AOMAction>
+                        </li>
                     ))}
                 </ul>
             </div>

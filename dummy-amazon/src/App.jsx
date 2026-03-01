@@ -10,6 +10,7 @@ import Checkout from './components/Checkout';
 import OrdersPage from './components/OrdersPage';
 import AddressModal from './components/AddressModal';
 import AgentDashboard from './components/AgentDashboard/AgentDashboard';
+import { AOMAction } from '../../aom-wrappers';
 import './App.css';
 
 const SORT_OPTIONS = [
@@ -180,11 +181,31 @@ function App() {
                 {(filters.category !== 'All' || filters.brand || filters.priceMin > 0 || filters.priceMax < Infinity || filters.minRating > 0 || filters.prime) && (
                   <div className="active-filters">
                     <span className="active-filters__label">Active Filters:</span>
-                    {filters.category !== 'All' && <span className="filter-tag" onClick={() => updateFilter({ category: 'All' })}>{filters.category} ✕</span>}
-                    {filters.brand && <span className="filter-tag" onClick={() => updateFilter({ brand: '' })}>{filters.brand} ✕</span>}
-                    {filters.priceMin > 0 && <span className="filter-tag" onClick={() => updateFilter({ priceMin: 0, priceMax: Infinity })}>Under ${filters.priceMax === Infinity ? '∞' : filters.priceMax} ✕</span>}
-                    {filters.minRating > 0 && <span className="filter-tag" onClick={() => updateFilter({ minRating: 0 })}>{filters.minRating}+ Stars ✕</span>}
-                    {filters.prime && <span className="filter-tag" onClick={() => updateFilter({ prime: false })}>Prime ✕</span>}
+                    {filters.category !== 'All' && (
+                      <AOMAction id="clear_filter.category" description={`Remove category filter: ${filters.category}`}>
+                        <span className="filter-tag" onClick={() => updateFilter({ category: 'All' })}>{filters.category} ✕</span>
+                      </AOMAction>
+                    )}
+                    {filters.brand && (
+                      <AOMAction id="clear_filter.brand" description={`Remove brand filter: ${filters.brand}`}>
+                        <span className="filter-tag" onClick={() => updateFilter({ brand: '' })}>{filters.brand} ✕</span>
+                      </AOMAction>
+                    )}
+                    {filters.priceMin > 0 && (
+                      <AOMAction id="clear_filter.price" description="Remove active price filter">
+                        <span className="filter-tag" onClick={() => updateFilter({ priceMin: 0, priceMax: Infinity })}>Under ${filters.priceMax === Infinity ? '∞' : filters.priceMax} ✕</span>
+                      </AOMAction>
+                    )}
+                    {filters.minRating > 0 && (
+                      <AOMAction id="clear_filter.rating" description={`Remove minimum rating filter`}>
+                        <span className="filter-tag" onClick={() => updateFilter({ minRating: 0 })}>{filters.minRating}+ Stars ✕</span>
+                      </AOMAction>
+                    )}
+                    {filters.prime && (
+                      <AOMAction id="clear_filter.prime" description="Remove prime requirement filter">
+                        <span className="filter-tag" onClick={() => updateFilter({ prime: false })}>Prime ✕</span>
+                      </AOMAction>
+                    )}
                   </div>
                 )}
 

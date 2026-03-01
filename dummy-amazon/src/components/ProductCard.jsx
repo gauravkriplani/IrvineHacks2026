@@ -34,11 +34,6 @@ export default function ProductCard({ product, onProductClick }) {
     return (
         <AOMLink id={`product.${product.id}.view_details`} description={`View details for ${product.name}`} destination="Product Detail">
             <div className="product-card" onClick={() => onProductClick(product)}>
-                {/* Badges */}
-                <div className="product-card__badges">
-                    {product.badge && <span className="product-badge">{product.badge}</span>}
-                    {discount > 0 && <span className="product-badge product-badge--discount">-{discount}%</span>}
-                </div>
 
                 {/* Wishlist */}
                 <AOMAction id={`product.${product.id}.toggle_wishlist`} description={`${wishlisted ? 'Remove' : 'Add'} ${product.name} ${wishlisted ? 'from' : 'to'} wishlist`}>

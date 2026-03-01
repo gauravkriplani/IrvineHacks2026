@@ -91,12 +91,24 @@ export default function AgentDashboard() {
                 })
             });
 
+            let data;
+            const resText = await response.text();
+
             if (!response.ok) {
-                const err = await response.json();
-                throw new Error(err.error?.message || 'Groq API request failed');
+                try {
+                    const err = JSON.parse(resText);
+                    throw new Error(err.error?.message || 'Groq API request failed');
+                } catch {
+                    throw new Error(`HTTP Error ${response.status}: ${resText.slice(0, 100)}`);
+                }
             }
 
-            const data = await response.json();
+            try {
+                data = JSON.parse(resText);
+            } catch (e) {
+                throw new Error("Invalid response from API (not JSON).");
+            }
+
             const content = data.choices[0].message.content.trim();
             const llmDecision = JSON.parse(content);
 
