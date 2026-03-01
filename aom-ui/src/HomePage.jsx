@@ -164,15 +164,16 @@ export default function HomePage() {
       {/* ── Features ─────────────────────────────────────────────── */}
       <section className="hp-features">
         <h2 className="hp-section-title">
-          Built for accessibility.<br /><span style={{color: '#0e0e0e'}}>Built for agents.</span>
+          Built for accessibility.<br /><span style={{ color: '#0e0e0e' }}>Built for agents.</span>
         </h2>
         <p className="hp-features-sub">
           Choose the output that fits your workflow — auto-generated AOM wrappers, inline ARIA annotations, or a fully annotated ZIP ready to ship.
         </p>
         <div className="hp-features-grid">
-          {FEATURES.map(f => (
+          {FEATURES.map((f, i) => (
             <div className="hp-feat-card" key={f.title}>
-              <div className="hp-feat-preview" style={{'--feat-accent': f.accent}}>
+              <div className="hp-feat-preview" style={{ '--feat-accent': f.accent }}>
+                <div className="hp-feat-number">{i + 1}</div>
                 {f.image
                   ? <img src={f.image} alt={f.title} className="hp-feat-preview-img" />
                   : <span className="hp-feat-preview-icon">{f.icon}</span>
@@ -191,7 +192,7 @@ export default function HomePage() {
       <section className="hp-carousel-section">
         <div className="hp-carousel-wrapper">
           <button className="hp-carousel-arrow hp-carousel-arrow--prev" onClick={prevSlide} aria-label="Previous slide">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg>
           </button>
 
           <div className="hp-carousel">
@@ -219,7 +220,7 @@ export default function HomePage() {
           </div>
 
           <button className="hp-carousel-arrow hp-carousel-arrow--next" onClick={nextSlide} aria-label="Next slide">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 6 15 12 9 18" /></svg>
           </button>
         </div>
       </section>
