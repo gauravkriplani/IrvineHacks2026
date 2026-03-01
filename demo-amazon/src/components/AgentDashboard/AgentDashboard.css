@@ -413,6 +413,73 @@
     animation: shimmer-text 2s infinite linear;
 }
 
+/* Agent Approval Prompt */
+.agent-approval-prompt {
+    background: rgba(16, 185, 129, 0.05);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    border-radius: 8px;
+    padding: 16px;
+    margin: 8px 12px;
+    animation: fadeIn 0.3s ease;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.agent-approval-header {
+    font-weight: 500;
+    color: #059669;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.agent-approval-desc {
+    font-size: 13.5px;
+    color: #475569;
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.agent-approval-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.agent-btn-reject,
+.agent-btn-approve {
+    padding: 6px 16px;
+    border-radius: 4px;
+    border: none;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.agent-btn-reject {
+    background: transparent;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+}
+
+.agent-btn-reject:hover {
+    background: rgba(239, 68, 68, 0.05);
+}
+
+.agent-btn-approve {
+    background: #10b981;
+    color: white;
+    box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+}
+
+.agent-btn-approve:hover {
+    background: #059669;
+    box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+}
+
 @keyframes morph {
     0% {
         border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;

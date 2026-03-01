@@ -44,6 +44,8 @@ export default function AgentDashboard() {
     const [history, setHistory] = useState([]);
     const [isProcessing, setIsProcessing] = useState(false);
     const [isRecording, setIsRecording] = useState(false);
+    const [pendingApproval, setPendingApproval] = useState(null);
+    const approvalResolverRef = useRef(null);
     const mediaRecorderRef = useRef(null);
     const audioChunksRef = useRef([]);
     const historyEndRef = useRef(null);
@@ -138,6 +140,14 @@ export default function AgentDashboard() {
             setIsRecording(false);
             setHistory(h => [...h, { type: 'agent', success: false, message: 'Microphone access denied or unavailable.' }]);
         }
+    };
+
+    const handleApproval = (approved) => {
+        if (approvalResolverRef.current) {
+            approvalResolverRef.current(approved);
+            approvalResolverRef.current = null;
+        }
+        setPendingApproval(null);
     };
 
     // Auto-scroll to bottom of history
@@ -261,6 +271,22 @@ export default function AgentDashboard() {
                         break;
                     } else {
                         const action = window.__AOM__.get(action_id);
+
+                        // Human-in-the-loop safety gap
+                        if (action.needsReview) {
+                            setPendingApproval(action);
+                            const approved = await new Promise(resolve => {
+                                approvalResolverRef.current = resolve;
+                            });
+
+                            if (!approved) {
+                                setHistory(h => [...h, { type: 'agent', success: false, message: `Action '${action_id}' was rejected by the user.` }]);
+                                // Resume the agent loop so it can potentially try something else,
+                                // but we skip executing the rejected action.
+                                continue;
+                            }
+                        }
+
                         let execMessage = '';
 
                         if (action_type === 'fill') {
@@ -348,7 +374,21 @@ export default function AgentDashboard() {
                         );
                     })}
 
-                    {isProcessing && (
+                    {pendingApproval && (
+                        <div className="agent-approval-prompt">
+                            <div className="agent-approval-header">⚠️ Human Review Required</div>
+                            <div className="agent-approval-desc">
+                                The agent wants to execute a protected action:<br />
+                                <strong>{pendingApproval.description || pendingApproval.action_id}</strong>
+                            </div>
+                            <div className="agent-approval-actions">
+                                <button className="agent-btn-reject" onClick={() => handleApproval(false)}>Reject</button>
+                                <button className="agent-btn-approve" onClick={() => handleApproval(true)}>Approve</button>
+                            </div>
+                        </div>
+                    )}
+
+                    {!pendingApproval && isProcessing && (
                         <div className="agent-working-indicator">
                             <span className="agent-working-blob"></span>
                             <span className="agent-working-text">Agent is working...</span>

@@ -191,7 +191,7 @@ export default function Checkout({ onBack, deliveryAddress, onAddressChange, onO
                                 <AOMAction id="checkout.review.back_to_payment" description="Go back to payment step from review">
                                     <button className="checkout-back-btn" onClick={() => setStep(1)}>Back</button>
                                 </AOMAction>
-                                <AOMAction id="checkout.review.place_order_main" description="Finalize checkout and place the order" safety={0.9}>
+                                <AOMAction id="checkout.review.place_order_main" description="Finalize checkout and place the order" safety={0.9} needsReview={true}>
                                     <button className="checkout-place-btn" onClick={handlePlaceOrder}>Place Your Order</button>
                                 </AOMAction>
                             </div>
@@ -203,7 +203,7 @@ export default function Checkout({ onBack, deliveryAddress, onAddressChange, onO
                 <div className="checkout-summary">
                     <div className="checkout-summary__card">
                         {step === 2 && (
-                            <AOMAction id="checkout.review.place_order_sidebar" description="Finalize checkout and place the order from summary sidebar" safety={0.9}>
+                            <AOMAction id="checkout.sidebar.place_order" description="Finalize checkout and place the order from sidebar" safety={0.9} needsReview={true}>
                                 <button className="checkout-place-btn" onClick={handlePlaceOrder} style={{ marginBottom: 16 }}>Place Your Order</button>
                             </AOMAction>
                         )}

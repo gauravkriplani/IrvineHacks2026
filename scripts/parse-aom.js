@@ -151,6 +151,7 @@ async function parseAOM() {
                     description: props.description ?? '',
                     permission: props.permission ?? (kind === 'link' ? 'public' : 'user'),
                     safety_score: props.safety ?? (kind === 'input' ? 0.95 : 0.9),
+                    needs_review: props.needsReview ?? false,
                     ...(kind === 'input' && { input_type: props.inputType ?? 'text' }),
                     ...(kind === 'link' && { destination: props.destination ?? '' }),
                     ...(props.group && { group: props.group }),
@@ -197,6 +198,7 @@ async function parseAOM() {
             lines.push(`Description: ${a.description}`);
             lines.push(`Permission:  ${a.permission}`);
             lines.push(`Safety:      ${a.safety_score}`);
+            lines.push(`Review:      ${a.needs_review}`);
             if (a.input_type) lines.push(`Input type:  ${a.input_type}`);
             if (a.destination) lines.push(`Destination: ${a.destination}`);
             if (a.group) lines.push(`Group:       ${a.group}`);

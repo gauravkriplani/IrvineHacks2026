@@ -19,6 +19,7 @@ export default function AOMAction({
     description,
     permission = 'user',
     safety = 0.9,
+    needsReview = false,
     group,
     children,
 }) {
@@ -31,11 +32,12 @@ export default function AOMAction({
             description,
             permission,
             safety,
+            needsReview,
             group,
             element: ref.current,
         });
         return () => AOMRegistry.unregister(id);
-    }, [id, description, permission, safety, group]);
+    }, [id, description, permission, safety, needsReview, group]);
 
     const child = Children.only(children);
     return cloneElement(child, {

@@ -19,6 +19,7 @@ export default function AOMLink({
     description,
     destination,
     permission = 'public',
+    needsReview = false,
     group,
     children,
 }) {
@@ -31,11 +32,12 @@ export default function AOMLink({
             description,
             destination,
             permission,
+            needsReview,
             group,
             element: ref.current,
         });
         return () => AOMRegistry.unregister(id);
-    }, [id, description, destination, permission, group]);
+    }, [id, description, destination, permission, needsReview, group]);
 
     const child = Children.only(children);
     return cloneElement(child, {

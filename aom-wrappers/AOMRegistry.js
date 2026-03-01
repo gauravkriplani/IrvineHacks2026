@@ -70,6 +70,7 @@ class AOMRegistryClass {
                 description: entry.description,
                 permission: entry.permission,
                 enabled: entry.enabled ?? true,
+                needsReview: entry.needsReview ?? false,
                 ...(entry.inputType && { inputType: entry.inputType }),
                 ...(entry.destination && { destination: entry.destination }),
             };

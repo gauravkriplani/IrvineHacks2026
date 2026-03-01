@@ -19,6 +19,7 @@ export default function AOMInput({
     description,
     inputType = 'text',
     permission = 'user',
+    needsReview = false,
     group,
     children,
 }) {
@@ -31,11 +32,12 @@ export default function AOMInput({
             description,
             inputType,
             permission,
+            needsReview,
             group,
             element: ref.current,
         });
         return () => AOMRegistry.unregister(id);
-    }, [id, description, inputType, permission, group]);
+    }, [id, description, inputType, permission, needsReview, group]);
 
     const child = Children.only(children);
     return cloneElement(child, {
