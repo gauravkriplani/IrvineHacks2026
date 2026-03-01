@@ -2,17 +2,27 @@
 
 /* shell — extends hp-shell from HomePage.css */
 .tm-shell {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Body ─────────────────────────────────────────────────────────────────── */
+.tm-body {
+  flex: 1;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   background:
     /* Overlay opacity — raise toward 1.0 for more white, lower for more pattern */
-    linear-gradient(rgba(255,255,255,0.65), rgba(255,255,255,0.65)),
+    linear-gradient(rgba(255, 255, 255, 0.65), rgba(255, 255, 255, 0.65)),
     url('./public/magicpattern-87PP9Zd7MNo-unsplash.jpg') center / cover no-repeat;
 }
 
 /* ── Hero header ──────────────────────────────────────────────────────────── */
 .tm-header {
   text-align: center;
-  padding: 80px 24px 72px;   /* ← change 80px to move header up/down */
+  padding: 80px 24px 72px;
+  /* ← change 80px to move header up/down */
   max-width: 680px;
   margin: 0 auto;
 }

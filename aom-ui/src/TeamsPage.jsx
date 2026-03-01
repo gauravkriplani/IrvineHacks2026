@@ -89,38 +89,41 @@ export default function TeamsPage() {
         </div>
       </nav>
 
-      {/* ── Hero header ───────────────────────────────────────────── */}
-      <section className="tm-header">
-        <p className="hp-eyebrow">Built at IrvineHacks 2026</p>
-        <h1 className="tm-title">About Us</h1>
-        <p className="tm-sub">
-          We're a team of four students passionate about making the web more accessible
-          through AI-powered tooling. [insert team tagline / mission statement here]
-        </p>
-      </section>
+      {/* ── Main Body ─────────────────────────────────────────────── */}
+      <div className="tm-body">
+        {/* ── Hero header ───────────────────────────────────────────── */}
+        <section className="tm-header">
+          <p className="hp-eyebrow">Built at IrvineHacks 2026</p>
+          <h1 className="tm-title">About Us</h1>
+          <p className="tm-sub">
+            We're a team of four students passionate about making the web more accessible
+            through AI-powered tooling. [insert team tagline / mission statement here]
+          </p>
+        </section>
 
-      {/* ── Team grid ─────────────────────────────────────────────── */}
-      <section className="tm-grid-section">
-        <div className="tm-grid">
-          {TEAM.map((member) => (
-            <div className="tm-card" key={member.name}>
-              <div className="tm-avatar">
-                <img src={member.photo} alt={member.name} className="tm-avatar-img" />
-              </div>
-              <div className="tm-info">
-                <div className="tm-name">{member.name}</div>
-                <div className="tm-role">{member.role}</div>
-                <div className="tm-school">{member.school}</div>
-                <p className="tm-bio">{member.bio}</p>
-                <div className="tm-links">
-                  <a href={member.github} className="tm-icon-link" target="_blank" rel="noreferrer" aria-label="GitHub"><GithubIcon /></a>
-                  <a href={member.linkedin} className="tm-icon-link" target="_blank" rel="noreferrer" aria-label="LinkedIn"><LinkedInIcon /></a>
+        {/* ── Team grid ─────────────────────────────────────────────── */}
+        <section className="tm-grid-section">
+          <div className="tm-grid">
+            {TEAM.map((member) => (
+              <div className="tm-card" key={member.name}>
+                <div className="tm-avatar">
+                  <img src={member.photo} alt={member.name} className="tm-avatar-img" />
+                </div>
+                <div className="tm-info">
+                  <div className="tm-name">{member.name}</div>
+                  <div className="tm-role">{member.role}</div>
+                  <div className="tm-school">{member.school}</div>
+                  <p className="tm-bio">{member.bio}</p>
+                  <div className="tm-links">
+                    <a href={member.github} className="tm-icon-link" target="_blank" rel="noreferrer" aria-label="GitHub"><GithubIcon /></a>
+                    <a href={member.linkedin} className="tm-icon-link" target="_blank" rel="noreferrer" aria-label="LinkedIn"><LinkedInIcon /></a>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-      </section>
+            ))}
+          </div>
+        </section>
+      </div>
 
       {/* ── Footer ───────────────────────────────────────────────── */}
       <footer className="hp-footer">

@@ -74,6 +74,11 @@ export default function HomePage() {
     return () => window.removeEventListener('scroll', onScroll);
   }, [lastScrollY]);
 
+  useEffect(() => {
+    document.documentElement.classList.add('snap-enabled');
+    return () => document.documentElement.classList.remove('snap-enabled');
+  }, []);
+
   return (
     <div className="hp-shell">
       <MorphingParticles
