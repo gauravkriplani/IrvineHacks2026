@@ -55,6 +55,7 @@ const MorphingParticles = ({
         const positions = new Float32Array(particleCount * 3);
         const colors = new Float32Array(particleCount * 3);
         const sizes = new Float32Array(particleCount);
+        const rotations = new Float32Array(particleCount);
 
         const ambientData = new Float32Array(particleCount * 3);
         const driftSpeeds = new Float32Array(particleCount);
@@ -82,8 +83,11 @@ const MorphingParticles = ({
             colors[i * 3 + 1] = col.g;
             colors[i * 3 + 2] = col.b;
 
-            // EVEN BIGGER particles as requested
-            sizes[i] = Math.random() * 25 + 15;
+            // Smaller size now — elongation handled in shader
+            sizes[i] = Math.random() * 16 + 10;
+
+            // Random rotation per particle for rice-grain orientation
+            rotations[i] = Math.random() * Math.PI;
 
             driftSpeeds[i] = 0.0001 + Math.random() * 0.0005;
             driftPhase[i] = Math.random() * Math.PI * 2;
@@ -95,27 +99,38 @@ const MorphingParticles = ({
         geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
         geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
         geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+        geometry.setAttribute('rotation', new THREE.BufferAttribute(rotations, 1));
 
         const material = new THREE.PointsMaterial({
-            size: 1, // Controlled by attribute
+            size: 6,
             vertexColors: true,
             transparent: true,
-            opacity: 0.8, // Increased opacity
+            opacity: 0.8,
             blending: THREE.AdditiveBlending,
             sizeAttenuation: false
         });
 
-        // Shader to use the 'size' attribute properly and make particles circular
+        // Shader: per-particle size attribute + rice-grain (elongated ellipse) shape with rotation
         material.onBeforeCompile = (shader) => {
             shader.vertexShader = shader.vertexShader.replace(
+                'uniform float size;',
+                'attribute float size;\nattribute float rotation;\nvarying float vRotation;'
+            );
+            shader.vertexShader = shader.vertexShader.replace(
                 'gl_PointSize = size;',
-                'gl_PointSize = size;'
+                'gl_PointSize = size * 3.0;\nvRotation = rotation;'
             );
             shader.fragmentShader = shader.fragmentShader.replace(
                 'void main() {',
-                `void main() {
-                    // Circular clipping for rounded particles
-                    if(length(gl_PointCoord - vec2(0.5)) > 0.5) discard;
+                `varying float vRotation;
+                void main() {
+                    vec2 p = gl_PointCoord - vec2(0.5);
+                    float c = cos(vRotation);
+                    float s = sin(vRotation);
+                    vec2 rotated = vec2(c * p.x + s * p.y, -s * p.x + c * p.y);
+                    // Elongated ellipse: thin on x, long on y → rice shape
+                    float d = (rotated.x * rotated.x) / (0.12 * 0.12) + (rotated.y * rotated.y) / (0.45 * 0.45);
+                    if(d > 1.0) discard;
                 `
             );
         };
@@ -222,8 +237,8 @@ const MorphingParticles = ({
                     ty += thickness;
                 } else {
                     // Ambient drift
-                    const shiftX = Math.sin(time * driftSpeeds[i] + driftPhase[i]) * 150;
-                    const shiftY = Math.cos(time * driftSpeeds[i] * 0.8 + driftPhase[i]) * 150;
+                    const shiftX = Math.sin(time * driftSpeeds[i] + driftPhase[i]) * 300;
+                    const shiftY = Math.cos(time * driftSpeeds[i] * 0.8 + driftPhase[i]) * 300;
 
                     tx = ambientData[idx] + shiftX;
                     ty = ambientData[idx + 1] + shiftY;
@@ -232,9 +247,9 @@ const MorphingParticles = ({
                     const dx = mouse.current.x - tx;
                     const dy = mouse.current.y - ty;
                     const distMouse = Math.sqrt(dx * dx + dy * dy);
-                    if (distMouse < 400) {
-                        tx += dx * (1 - distMouse / 400) * 0.4;
-                        ty += dy * (1 - distMouse / 400) * 0.4;
+                    if (distMouse < 600) {
+                        tx += dx * (1 - distMouse / 600) * 0.4;
+                        ty += dy * (1 - distMouse / 600) * 0.4;
                     }
                 }
 

@@ -144,8 +144,8 @@ a {
 }
 
 .hp-hero-title {
-  font-size: clamp(42px, 7vw, 72px);
-  font-weight: 850;
+  font-size: clamp(55px, 9vw, 95px);
+  font-weight: 500;
   line-height: 1.04;
   letter-spacing: -0.04em;
   color: #0e0e0e;
@@ -224,7 +224,7 @@ a {
 }
 
 .hp-section-title {
-  font-size: clamp(30px, 4vw, 46px);
+  font-size: clamp(38px, 5vw, 58px);
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.1;
@@ -283,7 +283,7 @@ a {
 }
 
 .hp-devs-title {
-  font-size: clamp(30px, 4vw, 46px);
+  font-size: clamp(38px, 5vw, 58px);
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.1;
@@ -387,7 +387,7 @@ a {
 }
 
 .hp-cta-title {
-  font-size: clamp(28px, 4vw, 44px);
+  font-size: clamp(36px, 5vw, 56px);
   font-weight: 800;
   letter-spacing: -0.03em;
   color: #ffffff;
