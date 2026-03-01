@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import './HomePage.css';
+import './AomUploadPage.css';
 
 export default function AomUploadPage() {
   const [status, setStatus] = useState('idle'); // idle | loading | done | error
@@ -42,134 +45,119 @@ export default function AomUploadPage() {
     processFile(e.dataTransfer.files[0]);
   }
 
+  const dropClass = [
+    'tk-drop',
+    dragOver ? 'tk-drop--active' : '',
+    status === 'loading' ? 'tk-drop--loading' : '',
+  ].filter(Boolean).join(' ');
+
   return (
-    <div style={styles.page}>
-      <div style={styles.card}>
-        <h1 style={styles.title}>AOM Wrapper Generator</h1>
-        <p style={styles.subtitle}>
-          Upload a <code>.zip</code> of your <code>src/</code> folder and download
-          the generated AOM wrapper artifacts.
-        </p>
+    <div className="tk-shell">
+      {/* Nav — identical to homepage */}
+      <nav className="hp-nav">
+        <Link to="/" className="hp-nav-brand">
+          <svg className="hp-nav-logo" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <polygon points="14,2 26,24 2,24" fill="#1a1a1a" />
+            <polygon points="14,7 23,22 11,22" fill="#4285f4" opacity="0.75" />
+          </svg>
+          Agent Native
+        </Link>
+        <div className="hp-nav-center">
+          <Link to="/" className="hp-nav-link">Home</Link>
+          <a href="https://github.com/gauravkriplani/IrvineHacks2026" className="hp-nav-link" target="_blank" rel="noreferrer">GitHub</a>
+          <a href="https://www.w3.org/TR/wai-aria-1.2/" className="hp-nav-link" target="_blank" rel="noreferrer">WAI-ARIA</a>
+        </div>
+        <Link to="/" className="hp-nav-cta">← Back to Home</Link>
+      </nav>
 
-        <label
-          style={{ ...styles.dropZone, ...(dragOver ? styles.dropZoneActive : {}) }}
-          onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
-          onDragLeave={() => setDragOver(false)}
-          onDrop={onDrop}
-        >
-          <input
-            type="file"
-            accept=".zip"
-            style={{ display: 'none' }}
-            onChange={onFileChange}
-            disabled={status === 'loading'}
-          />
-          {status === 'loading' ? (
-            <span style={styles.spinner}>⏳ Generating wrappers…</span>
-          ) : (
-            <>
-              <span style={styles.uploadIcon}>📦</span>
-              <span style={styles.dropText}>
-                Drag &amp; drop your <b>source.zip</b> here, or <u>click to browse</u>
-              </span>
-            </>
+      {/* Body */}
+      <main className="tk-body">
+        <div className="tk-card">
+          {/* Header */}
+          <div className="tk-badge">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+              <circle cx="5" cy="5" r="4" fill="#22c55e"/>
+            </svg>
+            Tool
+          </div>
+          <h1 className="tk-title">AOM Wrapper Generator</h1>
+          <p className="tk-subtitle">
+            Upload a <code>.zip</code> of your <code>src/</code> folder and
+            download the generated AOM wrapper artifacts in seconds.
+          </p>
+
+          {/* Drop zone */}
+          <label
+            className={dropClass}
+            onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={onDrop}
+          >
+            <input
+              type="file"
+              accept=".zip"
+              style={{ display: 'none' }}
+              onChange={onFileChange}
+              disabled={status === 'loading'}
+            />
+            {status === 'loading' ? (
+              <div className="tk-drop-loading">
+                <div className="tk-spinner-ring" />
+                <span className="tk-spinner-label">Generating wrappers…</span>
+              </div>
+            ) : (
+              <>
+                <div className="tk-drop-icon">📦</div>
+                <p className="tk-drop-text">
+                  Drag &amp; drop your <b>source.zip</b> here,{' '}
+                  or <u>click to browse</u>
+                </p>
+              </>
+            )}
+          </label>
+
+          {/* Status banners */}
+          {status === 'done' && (
+            <div className="tk-banner tk-banner--success">
+              <span className="tk-banner-icon">✓</span>
+              <span><b>aom-wrappers.zip</b> downloaded successfully!</span>
+            </div>
           )}
-        </label>
+          {status === 'error' && (
+            <div className="tk-banner tk-banner--error">
+              <span className="tk-banner-icon">!</span>
+              <span>{error}</span>
+            </div>
+          )}
 
-        {status === 'done' && (
-          <div style={styles.success}>✅ <b>aom-wrappers.zip</b> downloaded successfully!</div>
-        )}
-        {status === 'error' && (
-          <div style={styles.errorBox}>❌ {error}</div>
-        )}
+          <div className="tk-divider" />
 
-        <div style={styles.info}>
-          <b>How it works:</b>
-          <ol style={{ marginTop: 6, paddingLeft: 18, lineHeight: 1.7 }}>
-            <li>Zip your project's <code>src/</code> folder.</li>
-            <li>Upload it here.</li>
-            <li>
-              Download <code>aom-wrappers.zip</code> containing per-file wrapper
-              metadata and a <code>manifest.json</code>.
-            </li>
-            <li>
-              Drop the <code>AI/</code> folder into your project and use the
-              metadata to accelerate agent workflows.
-            </li>
+          {/* How it works */}
+          <p className="tk-how-title">How it works</p>
+          <ol className="tk-steps">
+            {[
+              <>Zip your project's <code>src/</code> folder.</>,
+              <>Upload it using the drop zone above.</>,
+              <>Download <code>aom-wrappers.zip</code> — per-file wrapper metadata and a <code>manifest.json</code>.</>,
+              <>Drop the <code>AI/</code> folder into your project and use the metadata to accelerate agent workflows.</>,
+            ].map((text, i) => (
+              <li key={i} className="tk-step">
+                <span className="tk-step-num">{i + 1}</span>
+                <span className="tk-step-text">{text}</span>
+              </li>
+            ))}
           </ol>
         </div>
-      </div>
+      </main>
+
+      {/* Footer — identical to homepage */}
+      <footer className="hp-footer">
+        <span className="hp-footer-brand">Agent Native</span>
+        <span>&copy; 2026 IrvineHacks2026 Team</span>
+        <div className="hp-footer-links">
+          <a href="https://github.com/gauravkriplani/IrvineHacks2026" target="_blank" rel="noreferrer">GitHub</a>
+        </div>
+      </footer>
     </div>
   );
 }
-
-const styles = {
-  page: {
-    minHeight: '100vh',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: '#0f0f0f',
-    fontFamily: 'Inter, system-ui, sans-serif',
-    padding: 24,
-  },
-  card: {
-    background: '#1a1a1a',
-    border: '1px solid #333',
-    borderRadius: 16,
-    padding: '40px 36px',
-    maxWidth: 560,
-    width: '100%',
-    boxShadow: '0 8px 40px rgba(0,0,0,0.5)',
-    color: '#f0f0f0',
-  },
-  title: { margin: '0 0 8px', fontSize: 26, fontWeight: 700 },
-  subtitle: { margin: '0 0 28px', color: '#aaa', fontSize: 14, lineHeight: 1.6 },
-  dropZone: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 10,
-    border: '2px dashed #444',
-    borderRadius: 12,
-    padding: '40px 24px',
-    cursor: 'pointer',
-    transition: 'border-color 0.2s, background 0.2s',
-    background: '#111',
-    marginBottom: 20,
-  },
-  dropZoneActive: {
-    borderColor: '#4f8ef7',
-    background: '#1b2a44',
-  },
-  uploadIcon: { fontSize: 40 },
-  dropText: { color: '#bbb', fontSize: 14, textAlign: 'center' },
-  spinner: { color: '#4f8ef7', fontSize: 16, fontWeight: 600 },
-  success: {
-    background: '#0d2e17',
-    border: '1px solid #2a7a44',
-    borderRadius: 8,
-    padding: '12px 16px',
-    color: '#4caf7d',
-    marginBottom: 20,
-    fontSize: 14,
-  },
-  errorBox: {
-    background: '#2e0d0d',
-    border: '1px solid #7a2a2a',
-    borderRadius: 8,
-    padding: '12px 16px',
-    color: '#cf6679',
-    marginBottom: 20,
-    fontSize: 14,
-  },
-  info: {
-    background: '#111',
-    border: '1px solid #2a2a2a',
-    borderRadius: 8,
-    padding: '14px 16px',
-    fontSize: 13,
-    color: '#aaa',
-  },
-};
