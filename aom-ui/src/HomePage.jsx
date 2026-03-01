@@ -48,9 +48,9 @@ const STATS = [
 ];
 
 /* ── Particle colours (matches antigravity.google light palette) ─────────── */
-const C1 = { r: 49,  g: 139, b: 247 }; // blue
-const C2 = { r: 139, g: 110, b: 245 }; // violet
-const C3 = { r: 227, g: 80,  b: 88  }; // red
+const C1 = { r: 66,  g: 133, b: 244 }; // Gemini blue   #4285F4
+const C2 = { r: 132, g: 48,  b: 206 }; // Gemini purple #8430CE
+const C3 = { r: 232, g: 70,  b: 131 }; // Gemini pink   #E84683
 
 function lerpC(a, b, t) {
   return { r: a.r + (b.r - a.r) * t, g: a.g + (b.g - a.g) * t, b: a.b + (b.b - a.b) * t };
@@ -64,15 +64,13 @@ function makeParticle() {
     x: 0, y: 0,
     angle:      Math.random() * Math.PI * 2,
     orbitR:     80 + Math.random() * 400,
-    orbitSpeed: (0.00015 + Math.random() * 0.0003) * (Math.random() < 0.5 ? 1 : -1),
+    orbitSpeed: (0.000035 + Math.random() * 0.000065) * (Math.random() < 0.5 ? 1 : -1),
     breathAmp:  6 + Math.random() * 14,
     breathFreq: 0.0006 + Math.random() * 0.001,
     breathPh:   Math.random() * Math.PI * 2,
     vx: 0, vy: 0,
-    lag:  0.008 + Math.random() * 0.010,
+    lag:  0.004 + Math.random() * 0.005,
     drag: 0.96,
-    angle2:   Math.random() * Math.PI,
-    spinRate: (Math.random() - 0.5) * 0.0015,
     len:       5 + Math.random() * 9,
     thickness: 1.2 + Math.random() * 1.3,
     col:       triColour(Math.random()),
@@ -93,7 +91,7 @@ export default function HomePage() {
 
     const cx = { val: 0, v: 0, target: 0 };
     const cy = { val: 0, v: 0, target: 0 };
-    const CENTER_K    = 0.025;
+    const CENTER_K    = 0.0125;
     const CENTER_DAMP = 0.85;
 
     const particles = Array.from({ length: 260 }, makeParticle);
@@ -161,7 +159,6 @@ export default function HomePage() {
 
       for (const p of particles) {
         p.angle  += p.orbitSpeed;
-        p.angle2 += p.spinRate;
 
         const r  = p.orbitR + Math.sin(t * p.breathFreq + p.breathPh) * p.breathAmp;
         const tx = cx.val + Math.cos(p.angle) * r;
@@ -185,8 +182,10 @@ export default function HomePage() {
 
         if (p.x < -20 || p.x > W + 20 || p.y < -20 || p.y > H + 20) continue;
 
-        const dx = Math.cos(p.angle2) * p.len * 0.5;
-        const dy = Math.sin(p.angle2) * p.len * 0.5;
+        // orient each dash toward the cursor/center
+        const toAngle = Math.atan2(cy.val - p.y, cx.val - p.x);
+        const dx = Math.cos(toAngle) * p.len * 0.5;
+        const dy = Math.sin(toAngle) * p.len * 0.5;
         const { r: cr, g, b } = p.col;
 
         ctx.save();
@@ -323,7 +322,6 @@ export default function HomePage() {
         <span className="hp-footer-brand">Agent Native</span>
         <span className="hp-footer-copy">&copy; 2026 IrvineHacks2026 Team</span>
         <div className="hp-footer-links">
-          <a href="https://www.w3.org/TR/wai-aria-1.2/" target="_blank" rel="noreferrer">WAI-ARIA 1.2</a>
           <a href="https://github.com/gauravkriplani/IrvineHacks2026" target="_blank" rel="noreferrer">GitHub</a>
         </div>
       </footer>

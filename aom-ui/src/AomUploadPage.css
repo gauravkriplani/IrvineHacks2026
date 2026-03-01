@@ -1,0 +1,235 @@
+/* ── Reset & base ───────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Shell ──────────────────────────────────────────────────────────────── */
+.tk-shell {
+  min-height: 100vh;
+  background: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+  color: #1a1a1a;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Page body ──────────────────────────────────────────────────────────── */
+.tk-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 60px);
+  padding: 60px 24px;
+}
+
+/* ── Card ───────────────────────────────────────────────────────────────── */
+.tk-card {
+  width: 100%;
+  max-width: 560px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  border-radius: 20px;
+  padding: 44px 40px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+/* ── Title ──────────────────────────────────────────────────────────────── */
+.tk-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(26, 26, 26, 0.45);
+  margin-bottom: 14px;
+}
+
+.tk-title {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.tk-subtitle {
+  font-size: 14px;
+  color: rgba(26, 26, 26, 0.55);
+  line-height: 1.65;
+  margin-bottom: 32px;
+}
+.tk-subtitle code {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 12.5px;
+  background: rgba(0, 0, 0, 0.05);
+  padding: 1px 5px;
+  border-radius: 4px;
+  color: #1a1a1a;
+}
+
+/* ── Drop zone ──────────────────────────────────────────────────────────── */
+.tk-drop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1.5px dashed rgba(0, 0, 0, 0.18);
+  border-radius: 14px;
+  padding: 44px 24px;
+  cursor: pointer;
+  transition: border-color 0.18s, background 0.18s;
+  background: transparent;
+  margin-bottom: 20px;
+}
+.tk-drop:hover {
+  border-color: rgba(0, 0, 0, 0.35);
+  background: rgba(0, 0, 0, 0.02);
+}
+.tk-drop--active {
+  border-color: #4f8ef7;
+  background: rgba(79, 142, 247, 0.04);
+}
+.tk-drop--loading {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.tk-drop-icon {
+  font-size: 36px;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
+.tk-drop-text {
+  font-size: 14px;
+  color: rgba(26, 26, 26, 0.55);
+  text-align: center;
+  line-height: 1.5;
+}
+.tk-drop-text b {
+  color: #1a1a1a;
+  font-weight: 600;
+}
+.tk-drop-text u {
+  color: #1a1a1a;
+  text-decoration-color: rgba(26, 26, 26, 0.35);
+  cursor: pointer;
+}
+
+.tk-drop-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ── Spinner ────────────────────────────────────────────────────────────── */
+.tk-spinner-ring {
+  width: 32px;
+  height: 32px;
+  border: 2.5px solid rgba(0, 0, 0, 0.08);
+  border-top-color: #1a1a1a;
+  border-radius: 50%;
+  animation: tk-spin 0.75s linear infinite;
+}
+@keyframes tk-spin { to { transform: rotate(360deg); } }
+
+.tk-spinner-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(26, 26, 26, 0.55);
+}
+
+/* ── Status banners ─────────────────────────────────────────────────────── */
+.tk-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  border-radius: 10px;
+  padding: 13px 16px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.tk-banner--success {
+  background: rgba(34, 197, 94, 0.07);
+  border: 1px solid rgba(34, 197, 94, 0.22);
+  color: #166534;
+}
+
+.tk-banner--error {
+  background: rgba(239, 68, 68, 0.06);
+  border: 1px solid rgba(239, 68, 68, 0.20);
+  color: #991b1b;
+}
+
+.tk-banner-icon { flex-shrink: 0; margin-top: 1px; }
+
+/* ── Divider ────────────────────────────────────────────────────────────── */
+.tk-divider {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.07);
+  margin: 24px 0;
+}
+
+/* ── How it works ───────────────────────────────────────────────────────── */
+.tk-how-title {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(26, 26, 26, 0.40);
+  margin-bottom: 14px;
+}
+
+.tk-steps {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tk-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.tk-step-num {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #1a1a1a;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+
+.tk-step-text {
+  font-size: 13.5px;
+  color: rgba(26, 26, 26, 0.65);
+  line-height: 1.6;
+}
+.tk-step-text code {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 12px;
+  background: rgba(0, 0, 0, 0.05);
+  padding: 1px 5px;
+  border-radius: 4px;
+  color: #1a1a1a;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 540px) {
+  .tk-card { padding: 32px 24px; border-radius: 16px; }
+  .tk-title { font-size: 22px; }
+  .tk-body { padding: 40px 16px; }
+}

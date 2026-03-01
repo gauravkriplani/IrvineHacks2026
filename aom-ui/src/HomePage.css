@@ -46,7 +46,7 @@ a { text-decoration: none; color: inherit; }
   white-space: nowrap;
 }
 
-.hp-nav-logo { display: block; flex-shrink: 0; }
+.hp-nav-logo { display: block; flex-shrink: 0; width: 20px; height: 20px; }
 
 .hp-nav-center {
   display: flex;
