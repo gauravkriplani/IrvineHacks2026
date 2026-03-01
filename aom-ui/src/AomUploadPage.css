@@ -1,37 +1,30 @@
-/* ── Reset & base ───────────────────────────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 /* ── Shell ──────────────────────────────────────────────────────────────── */
 .tk-shell {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   background: #ffffff;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
   color: #1a1a1a;
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── Page body ──────────────────────────────────────────────────────────── */
+/* ── Body ───────────────────────────────────────────────────────────────── */
 .tk-body {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  min-height: calc(100vh - 60px);
-  padding: 60px 24px;
+  padding: 64px 24px 80px;
 }
 
-/* ── Card ───────────────────────────────────────────────────────────────── */
-.tk-card {
-  width: 100%;
-  max-width: 560px;
-  background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.09);
-  border-radius: 20px;
-  padding: 44px 40px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+/* ── Page header ────────────────────────────────────────────────────────── */
+.tk-header {
+  text-align: center;
+  max-width: 520px;
+  margin-bottom: 56px;
 }
 
-/* ── Title ──────────────────────────────────────────────────────────────── */
 .tk-badge {
   display: inline-flex;
   align-items: center;
@@ -45,191 +38,309 @@
 }
 
 .tk-title {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 800;
   letter-spacing: -0.02em;
   color: #1a1a1a;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   line-height: 1.2;
 }
 
 .tk-subtitle {
-  font-size: 14px;
+  font-size: 15px;
   color: rgba(26, 26, 26, 0.55);
   line-height: 1.65;
-  margin-bottom: 32px;
-}
-.tk-subtitle code {
-  font-family: 'SF Mono', 'Fira Code', monospace;
-  font-size: 12.5px;
-  background: rgba(0, 0, 0, 0.05);
-  padding: 1px 5px;
-  border-radius: 4px;
-  color: #1a1a1a;
 }
 
-/* ── Drop zone ──────────────────────────────────────────────────────────── */
-.tk-drop {
+/* ═══════════════════════════════════════════════════════════════════════════
+   PIPELINE
+═══════════════════════════════════════════════════════════════════════════ */
+
+.pl-pipeline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 1020px;
+  margin: 0 auto;
+  /* allow horizontal scroll on small screens — never crush nodes into pipes */
+  overflow-x: auto;
+  padding: 8px 24px 16px;
+}
+
+/* ── Pipe connector ─────────────────────────────────────────────────────── */
+.pl-pipe {
+  flex: 0 0 56px;   /* fixed — never stretches or shrinks */
+  width: 56px;
+  height: 2px;
+  position: relative;
+  background: repeating-linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.14) 0,
+    rgba(0, 0, 0, 0.14) 5px,
+    transparent 5px,
+    transparent 11px
+  );
+  background-size: 11px 2px;
+}
+.pl-pipe::after {
+  content: '';
+  position: absolute;
+  right: -1px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 5px solid transparent;
+  border-left: 8px solid rgba(0, 0, 0, 0.14);
+}
+.pl-pipe--active {
+  background: repeating-linear-gradient(
+    to right,
+    #4285f4 0,
+    #4285f4 5px,
+    transparent 5px,
+    transparent 11px
+  );
+  background-size: 11px 2px;
+  animation: pl-flow 0.45s linear infinite;
+}
+.pl-pipe--active::after { border-left-color: #4285f4; }
+
+@keyframes pl-flow {
+  from { background-position-x: 0; }
+  to   { background-position-x: 11px; }
+}
+
+/* ── Stage group ────────────────────────────────────────────────────────── */
+.pl-stage-group {
+  display: flex;
+  align-items: center;
+  flex: none;   /* don't grow — keeps all gaps equal */
+}
+
+/* ── Base node ──────────────────────────────────────────────────────────── */
+.pl-node {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 10px;
-  border: 1.5px dashed rgba(0, 0, 0, 0.18);
-  border-radius: 14px;
-  padding: 44px 24px;
-  cursor: pointer;
-  transition: border-color 0.18s, background 0.18s;
-  background: transparent;
-  margin-bottom: 20px;
-}
-.tk-drop:hover {
-  border-color: rgba(0, 0, 0, 0.35);
-  background: rgba(0, 0, 0, 0.02);
-}
-.tk-drop--active {
-  border-color: #4f8ef7;
-  background: rgba(79, 142, 247, 0.04);
-}
-.tk-drop--loading {
-  cursor: not-allowed;
-  opacity: 0.65;
+  text-align: center;
+  gap: 5px;
+  border-radius: 18px;
+  padding: 24px 22px;
+  border: 1.5px solid rgba(0, 0, 0, 0.10);
+  background: #ffffff;
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.18s, box-shadow 0.18s, opacity 0.18s, background 0.18s;
+  flex-shrink: 0;
 }
 
-.tk-drop-icon {
-  font-size: 36px;
-  line-height: 1;
+/* ── IO nodes ───────────────────────────────────────────────────────────── */
+.pl-node--io {
+  width: 148px;
+  cursor: pointer;
+}
+.pl-node--io:hover:not(.pl-node--muted):not(.pl-node--output-ready) {
+  border-color: rgba(0, 0, 0, 0.22);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.09);
+}
+
+/* ── Stage nodes ────────────────────────────────────────────────────────── */
+.pl-node--stage { width: 148px; }
+
+/* ── States ─────────────────────────────────────────────────────────────── */
+.pl-node--muted {
+  opacity: 0.38;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.pl-node--drag {
+  border-color: #4285f4;
+  box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.16);
+  background: rgba(66, 133, 244, 0.03);
+}
+.pl-node--active {
+  border-color: #4285f4;
+  box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.13), 0 2px 18px rgba(66, 133, 244, 0.10);
+}
+.pl-node--done {
+  border-color: rgba(34, 197, 94, 0.32);
+  background: rgba(34, 197, 94, 0.025);
+}
+.pl-node--error {
+  border-color: rgba(239, 68, 68, 0.35);
+  background: rgba(239, 68, 68, 0.03);
+}
+.pl-node--output-ready {
+  opacity: 1;
+  cursor: default;
+  pointer-events: all;
+  border-color: rgba(34, 197, 94, 0.40);
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.10), 0 4px 22px rgba(34, 197, 94, 0.08);
+}
+
+/* ── Node typography ────────────────────────────────────────────────────── */
+.pl-node-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(26, 26, 26, 0.32);
   margin-bottom: 2px;
 }
-
-.tk-drop-text {
-  font-size: 14px;
-  color: rgba(26, 26, 26, 0.55);
-  text-align: center;
-  line-height: 1.5;
-}
-.tk-drop-text b {
-  color: #1a1a1a;
-  font-weight: 600;
-}
-.tk-drop-text u {
-  color: #1a1a1a;
-  text-decoration-color: rgba(26, 26, 26, 0.35);
-  cursor: pointer;
-}
-
-.tk-drop-loading {
+.pl-node-icon {
+  color: rgba(26, 26, 26, 0.45);
+  margin: 2px 0 4px;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 12px;
 }
-
-/* ── Spinner ────────────────────────────────────────────────────────────── */
-.tk-spinner-ring {
-  width: 32px;
-  height: 32px;
-  border: 2.5px solid rgba(0, 0, 0, 0.08);
-  border-top-color: #1a1a1a;
-  border-radius: 50%;
-  animation: tk-spin 0.75s linear infinite;
-}
-@keyframes tk-spin { to { transform: rotate(360deg); } }
-
-.tk-spinner-label {
+.pl-node--output-ready .pl-node-icon { color: #16a34a; }
+.pl-node-name {
   font-size: 13px;
-  font-weight: 500;
-  color: rgba(26, 26, 26, 0.55);
-}
-
-/* ── Status banners ─────────────────────────────────────────────────────── */
-.tk-banner {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  border-radius: 10px;
-  padding: 13px 16px;
-  font-size: 13.5px;
-  line-height: 1.5;
-  margin-bottom: 20px;
-}
-
-.tk-banner--success {
-  background: rgba(34, 197, 94, 0.07);
-  border: 1px solid rgba(34, 197, 94, 0.22);
-  color: #166534;
-}
-
-.tk-banner--error {
-  background: rgba(239, 68, 68, 0.06);
-  border: 1px solid rgba(239, 68, 68, 0.20);
-  color: #991b1b;
-}
-
-.tk-banner-icon { flex-shrink: 0; margin-top: 1px; }
-
-/* ── Divider ────────────────────────────────────────────────────────────── */
-.tk-divider {
-  height: 1px;
-  background: rgba(0, 0, 0, 0.07);
-  margin: 24px 0;
-}
-
-/* ── How it works ───────────────────────────────────────────────────────── */
-.tk-how-title {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: rgba(26, 26, 26, 0.40);
-  margin-bottom: 14px;
-}
-
-.tk-steps {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.tk-step {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-}
-
-.tk-step-num {
-  flex-shrink: 0;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: #1a1a1a;
-  color: #fff;
-  font-size: 11px;
   font-weight: 700;
+  color: #1a1a1a;
+  letter-spacing: -0.01em;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pl-node-sub {
+  font-size: 11px;
+  color: rgba(26, 26, 26, 0.42);
+  line-height: 1.4;
+}
+
+/* ── Stage icon circle ──────────────────────────────────────────────────── */
+.pl-stage-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(0, 0, 0, 0.09);
+  background: #f8f8f8;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 1px;
+  transition: background 0.18s, border-color 0.18s, color 0.18s;
+  color: rgba(26, 26, 26, 0.40);
+  margin-bottom: 4px;
 }
+.pl-node--active .pl-stage-icon {
+  border-color: #4285f4;
+  background: rgba(66, 133, 244, 0.07);
+  color: #4285f4;
+}
+.pl-node--done .pl-stage-icon {
+  border-color: rgba(34, 197, 94, 0.38);
+  background: rgba(34, 197, 94, 0.07);
+  color: #16a34a;
+}
+.pl-stage-glyph { font-size: 15px; line-height: 1; }
 
-.tk-step-text {
-  font-size: 13.5px;
-  color: rgba(26, 26, 26, 0.65);
-  line-height: 1.6;
+/* ── Stage spinner ──────────────────────────────────────────────────────── */
+.pl-stage-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(66, 133, 244, 0.20);
+  border-top-color: #4285f4;
+  border-radius: 50%;
+  animation: pl-spin 0.7s linear infinite;
 }
-.tk-step-text code {
-  font-family: 'SF Mono', 'Fira Code', monospace;
+@keyframes pl-spin { to { transform: rotate(360deg); } }
+
+/* ── Reset button ───────────────────────────────────────────────────────── */
+.pl-reset-btn {
+  margin-top: 8px;
+  background: #1a1a1a;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 7px 16px;
   font-size: 12px;
-  background: rgba(0, 0, 0, 0.05);
-  padding: 1px 5px;
-  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  font-family: inherit;
+}
+.pl-reset-btn:hover { opacity: 0.80; }
+
+/* ── Error banner ───────────────────────────────────────────────────────── */
+.pl-error-banner {
+  max-width: 980px;
+  width: 100%;
+  margin: 28px auto 0;
+  padding: 12px 20px;
+  background: rgba(239, 68, 68, 0.06);
+  border: 1px solid rgba(239, 68, 68, 0.20);
+  border-radius: 10px;
+  font-size: 13.5px;
+  color: #991b1b;
+  text-align: center;
+}
+.pl-error-retry {
+  background: none;
+  border: none;
   color: #1a1a1a;
+  font-weight: 600;
+  font-size: 13.5px;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  font-family: inherit;
 }
 
-/* ── Responsive ─────────────────────────────────────────────────────────── */
-@media (max-width: 540px) {
-  .tk-card { padding: 32px 24px; border-radius: 16px; }
-  .tk-title { font-size: 22px; }
-  .tk-body { padding: 40px 16px; }
+/* ── Responsive: vertical pipeline ─────────────────────────────────────── */
+@media (max-width: 720px) {
+  .pl-pipeline {
+    flex-direction: column;
+    align-items: center;
+    overflow-x: unset;
+    padding: 8px 24px 16px;
+  }
+  .pl-stage-group {
+    flex-direction: column;
+    align-items: center;
+  }
+  /* vertical fixed-height pipe — same as horizontal but rotated */
+  .pl-pipe {
+    flex: 0 0 40px;
+    width: 2px;
+    height: 40px;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.14) 0,
+      rgba(0, 0, 0, 0.14) 5px,
+      transparent 5px,
+      transparent 11px
+    );
+    background-size: 2px 11px;
+  }
+  .pl-pipe::after {
+    top: auto;
+    bottom: -1px;
+    right: 50%;
+    left: auto;
+    transform: translateX(50%);
+    border: 5px solid transparent;
+    border-left-color: transparent;
+    border-top: 8px solid rgba(0, 0, 0, 0.14);
+  }
+  .pl-pipe--active {
+    background: repeating-linear-gradient(
+      to bottom,
+      #4285f4 0,
+      #4285f4 5px,
+      transparent 5px,
+      transparent 11px
+    );
+    background-size: 2px 11px;
+    animation: pl-flow-v 0.45s linear infinite;
+  }
+  .pl-pipe--active::after { border-top-color: #4285f4; }
+  @keyframes pl-flow-v {
+    from { background-position-y: 0; }
+    to   { background-position-y: 11px; }
+  }
+  /* all nodes same width on mobile */
+  .pl-node--io,
+  .pl-node--stage { width: 200px; }
+  .tk-body { padding: 48px 16px 60px; }
 }
