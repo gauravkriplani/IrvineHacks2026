@@ -18,8 +18,10 @@ export default function TiltCard({ children, className = '', style = {}, maxTilt
     const gl = glareRef.current;
     if (!el) return;
 
-    const STIFFNESS = 0.07;
-    const THRESHOLD = 0.01;
+    // Increase stiffness so motion snaps quickly (less oscillation), and
+    // reduce threshold to stop sooner once close to the target.
+    const STIFFNESS = 0.4;
+    const THRESHOLD = 0.015;
 
     function tick() {
       const s = spring.current;
@@ -41,8 +43,9 @@ export default function TiltCard({ children, className = '', style = {}, maxTilt
 
       if (gl) {
         const glareAngle = Math.atan2(s.ry, -s.rx) * (180 / Math.PI) + 90;
+        // Make glare very subtle
         const glareOpacity = isHovering.current
-          ? Math.sqrt(s.rx * s.rx + s.ry * s.ry) / maxTilt * 0.12
+          ? Math.sqrt(s.rx * s.rx + s.ry * s.ry) / maxTilt * 0.03
           : 0;
         gl.style.opacity = glareOpacity;
         gl.style.background = `linear-gradient(${glareAngle}deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0) 60%)`;
@@ -69,11 +72,12 @@ export default function TiltCard({ children, className = '', style = {}, maxTilt
       const nx = ((e.clientX - rect.left) / rect.width  - 0.5) * 2;
       const ny = ((e.clientY - rect.top)  / rect.height - 0.5) * 2;
 
-      target.current.ry    =  nx * maxTilt;
-      target.current.rx    = -ny * maxTilt;
-      target.current.tx    =  nx * 3;
-      target.current.ty    =  ny * 3;
-      target.current.scale = 1.015;
+      // Further reduce magnitude for an even subtler hover
+      target.current.ry    =  nx * maxTilt * 0.4;
+      target.current.rx    = -ny * maxTilt * 0.4;
+      target.current.tx    =  nx * 0.6;
+      target.current.ty    =  ny * 0.6;
+      target.current.scale = 1.005;
       startLoop();
     }
 
