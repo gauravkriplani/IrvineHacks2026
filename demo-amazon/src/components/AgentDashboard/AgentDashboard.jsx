@@ -376,7 +376,7 @@ export default function AgentDashboard() {
                 <MorphingParticles
                     targetRef={{ current: null }}
                     isHovered={false}
-                    ambientScale={0.8}
+                    ambientScale={1.3}
                     color1="#10b981"
                     color2="#059669"
                     color3="#34d399"
