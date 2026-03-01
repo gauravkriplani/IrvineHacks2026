@@ -5,17 +5,17 @@ import './HomePage.css';
 import './AomUploadPage.css';
 
 const STAGES = [
-  { id: 'parse',    icon: '◈', label: 'Parse',    sub: 'Scan components' },
-  { id: 'generate', icon: '✦', label: 'Generate',  sub: 'AI writes AOM'  },
-  { id: 'bundle',   icon: '⬡', label: 'Bundle',    sub: 'Package output' },
+  { id: 'parse', icon: '◈', label: 'Parse', sub: 'Scan components' },
+  { id: 'generate', icon: '✦', label: 'Generate', sub: 'AI writes AOM' },
+  { id: 'bundle', icon: '⬡', label: 'Bundle', sub: 'Package output' },
 ];
 
 function IconUpload() {
   return (
     <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-      <polyline points="17 8 12 3 7 8"/>
-      <line x1="12" y1="3" x2="12" y2="15"/>
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="17 8 12 3 7 8" />
+      <line x1="12" y1="3" x2="12" y2="15" />
     </svg>
   );
 }
@@ -23,9 +23,9 @@ function IconUpload() {
 function IconDownload() {
   return (
     <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-      <polyline points="7 10 12 15 17 10"/>
-      <line x1="12" y1="15" x2="12" y2="3"/>
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="7 10 12 15 17 10" />
+      <line x1="12" y1="15" x2="12" y2="3" />
     </svg>
   );
 }
@@ -33,20 +33,21 @@ function IconDownload() {
 function IconCheck() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="20 6 9 17 4 12"/>
+      <polyline points="20 6 9 17 4 12" />
     </svg>
   );
 }
 
 export default function AomUploadPage() {
-  const [status,      setStatus]      = useState('idle'); // idle | loading | done | error
-  const [error,       setError]       = useState('');
-  const [dragOver,    setDragOver]    = useState(false);
-  const [fileName,    setFileName]    = useState('');
+  const [status, setStatus] = useState('idle'); // idle | loading | done | error
+  const [error, setError] = useState('');
+  const [dragOver, setDragOver] = useState(false);
+  const [fileName, setFileName] = useState('');
   const [activeStage, setActiveStage] = useState(-1);
-  const timers      = useRef([]);
+  const fileInputRef = useRef(null);
+  const timers = useRef([]);
   const pendingBlob = useRef(null);   // holds server response until animation ends
-  const animDone    = useRef(false);  // true once all stage timers have fired
+  const animDone = useRef(false);  // true once all stage timers have fired
 
   function clearTimers() { timers.current.forEach(clearTimeout); timers.current = []; }
 
@@ -54,7 +55,7 @@ export default function AomUploadPage() {
   function tryFinalize() {
     if (!animDone.current || !pendingBlob.current) return;
     const url = URL.createObjectURL(pendingBlob.current);
-    const a   = document.createElement('a');
+    const a = document.createElement('a');
     a.href = url;
     a.download = 'aom-wrappers.zip';
     a.click();
@@ -112,6 +113,9 @@ export default function AomUploadPage() {
     setError('');
     setFileName('');
     setActiveStage(-1);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   }
 
   function onFileChange(e) { processFile(e.target.files[0]); }
@@ -122,8 +126,8 @@ export default function AomUploadPage() {
   }
 
   const isLoading = status === 'loading';
-  const isDone    = status === 'done';
-  const isError   = status === 'error';
+  const isDone = status === 'done';
+  const isError = status === 'error';
 
   function pipeActive(index) {
     if (isDone) return true;
@@ -162,7 +166,7 @@ export default function AomUploadPage() {
         <div className="tk-header">
           <div className="tk-badge">
             <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-              <circle cx="5" cy="5" r="4" fill="#22c55e"/>
+              <circle cx="5" cy="5" r="4" fill="#22c55e" />
             </svg>
             Tool
           </div>
@@ -179,15 +183,16 @@ export default function AomUploadPage() {
           <label
             className={[
               'pl-node pl-node--io',
-              dragOver          ? 'pl-node--drag'  : '',
-              isLoading||isDone ? 'pl-node--muted' : '',
-              isError           ? 'pl-node--error' : '',
+              dragOver ? 'pl-node--drag' : '',
+              isLoading || isDone ? 'pl-node--muted' : '',
+              isError ? 'pl-node--error' : '',
             ].filter(Boolean).join(' ')}
             onDragOver={(e) => { e.preventDefault(); if (!isLoading && !isDone) setDragOver(true); }}
             onDragLeave={() => setDragOver(false)}
             onDrop={onDrop}
           >
             <input
+              ref={fileInputRef}
               type="file"
               accept=".zip"
               style={{ display: 'none' }}
