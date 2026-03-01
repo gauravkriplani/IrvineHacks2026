@@ -5,9 +5,8 @@ import './HomePage.css';
 import './AomUploadPage.css';
 
 const STAGES = [
-  { id: 'parse', icon: '◈', label: 'Parse', sub: 'Scan components' },
-  { id: 'generate', icon: '✦', label: 'Generate', sub: 'AI writes AOM' },
-  { id: 'bundle', icon: '⬡', label: 'Bundle', sub: 'Package output' },
+  { id: 'analysis', icon: '◈', label: 'Analysis', sub: 'Contextual mapping' },
+  { id: 'synthesis', icon: '✦', label: 'Synthesis', sub: 'AOM Synthesis' },
 ];
 
 function IconUpload() {
@@ -69,8 +68,7 @@ export default function AomUploadPage() {
     clearTimers();
     animDone.current = false;
     setActiveStage(0);
-    timers.current.push(setTimeout(() => setActiveStage(1), 2000));
-    timers.current.push(setTimeout(() => setActiveStage(2), 4000));
+    timers.current.push(setTimeout(() => setActiveStage(1), 3000));
     timers.current.push(setTimeout(() => {
       animDone.current = true;
       tryFinalize();

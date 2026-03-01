@@ -17,29 +17,29 @@ const FEATURES = [
     icon: '⬡',
     accent: '#4285F4',
     image: greenImg,
-    title: 'AOM Wrapper Generation',
-    desc: 'Upload your React ZIP and receive fully-compliant Accessibility Object Model wrapper components auto-generated for every interactive element.',
+    title: 'Project Ingestion',
+    desc: 'Drop your React project ZIP. Our system performs deep AST analysis to map every interactive node and logical state.',
   },
   {
     icon: '◎',
     accent: '#8430CE',
     image: annotationImg,
-    title: 'Inline Source Annotation',
-    desc: 'The AI scans your components and injects ARIA labels, roles, and descriptions directly — no manual markup required.',
+    title: 'Contextual Analysis',
+    desc: 'Large Language Models analyze your component hierarchy to understand the specific role and intent of every element.',
   },
   {
     icon: '✦',
     accent: '#E84683',
     image: llmImg,
-    title: 'LLM-Powered Intelligence',
-    desc: 'Backed by large language models that understand your component hierarchy and produce standards-compliant output aligned with WAI-ARIA 1.2.',
+    title: 'Wrapper Synthesis',
+    desc: 'We synthesize deterministic AOM wrappers, injecting correct ARIA semantics and readable identifiers into your source.',
   },
   {
     icon: '◈',
     accent: '#34A853',
     image: zipImg,
-    title: 'Instant ZIP Output',
-    desc: 'Receive a ready-to-use ZIP in seconds containing all generated or annotated files, ready to drop into your codebase.',
+    title: 'Instant Deployment',
+    desc: 'Download a production-ready ZIP of your code, now fully optimized for both accessibility and agent-first control.',
   },
 ];
 
@@ -162,10 +162,10 @@ export default function HomePage() {
       {/* ── Features ─────────────────────────────────────────────── */}
       <section className="hp-features">
         <h2 className="hp-section-title">
-          Built for accessibility.<br /><span style={{ color: '#0e0e0e' }}>Built for agents.</span>
+          How it works.<br /><span style={{ color: '#0e0e0e' }}>A 4-step pipeline.</span>
         </h2>
         <p className="hp-features-sub">
-          Choose the output that fits your workflow — auto-generated AOM wrappers, inline ARIA annotations, or a fully annotated ZIP ready to ship.
+          Our intelligent pipeline transforms your React source into a deterministic Agent Object Model, making your app natively readable by any AI agent.
         </p>
         <div className="hp-features-grid">
           {FEATURES.map((f, i) => (
