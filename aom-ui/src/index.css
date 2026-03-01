@@ -4,8 +4,10 @@
   padding: 0;
 }
 
+html, body, #root {
+  height: 100%;
+}
+
 body {
   font-family: Inter, system-ui, -apple-system, sans-serif;
-  background: #0f0f0f;
-  color: #f0f0f0;
 }
