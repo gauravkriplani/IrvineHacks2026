@@ -43,13 +43,119 @@ export default function AgentDashboard() {
     const [cmdInput, setCmdInput] = useState(''); // Renamed from 'command'
     const [history, setHistory] = useState([]);
     const [isProcessing, setIsProcessing] = useState(false);
+    const [isRecording, setIsRecording] = useState(false);
+    const mediaRecorderRef = useRef(null);
+    const audioChunksRef = useRef([]);
     const historyEndRef = useRef(null);
     const apiKey = import.meta.env.VITE_GROQ_KEY;
+
+    const toggleRecording = async (e) => {
+        if (e) e.preventDefault();
+
+        if (isRecording) {
+            mediaRecorderRef.current?.stop();
+            setIsRecording(false);
+            return;
+        }
+
+        // Optimistic UI update to prevent finicky double-clicks while stream loads
+        setIsRecording(true);
+
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+            // Prefer webm, fallback to mp4
+            let options = {};
+            if (MediaRecorder.isTypeSupported('audio/webm')) {
+                options = { mimeType: 'audio/webm' };
+            } else if (MediaRecorder.isTypeSupported('audio/mp4')) {
+                options = { mimeType: 'audio/mp4' };
+            }
+
+            const mediaRecorder = new MediaRecorder(stream, options);
+            mediaRecorderRef.current = mediaRecorder;
+            audioChunksRef.current = [];
+
+            mediaRecorder.ondataavailable = (event) => {
+                if (event.data.size > 0) {
+                    audioChunksRef.current.push(event.data);
+                }
+            };
+
+            mediaRecorder.onstop = async () => {
+                stream.getTracks().forEach(track => track.stop());
+
+                const mimeType = mediaRecorder.mimeType || 'audio/webm';
+                let ext = 'webm';
+                // Groq Whisper expects .mp4 for the audio/mp4 container, .m4a sometimes causes parsing failure
+                if (mimeType.includes('mp4') || mimeType.includes('m4a')) ext = 'mp4';
+                if (mimeType.includes('ogg')) ext = 'ogg';
+
+                const audioBlob = new Blob(audioChunksRef.current, { type: mimeType });
+
+                // Prevent empty/too short recordings from causing "invalid media file" API errors
+                if (audioBlob.size < 500) {
+                    setIsProcessing(false);
+                    setHistory(h => [...h, { type: 'agent', success: false, message: 'Audio recording was too short or empty.' }]);
+                    return;
+                }
+
+                const file = new File([audioBlob], `speech.${ext}`, { type: mimeType });
+
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('model', 'whisper-large-v3-turbo');
+                formData.append('language', 'en');
+
+                // Don't show the "Agent Processing" UI for transcription
+                try {
+                    const response = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${apiKey}`
+                        },
+                        body: formData
+                    });
+
+                    if (!response.ok) {
+                        const errObj = await response.json().catch(() => ({}));
+                        throw new Error(errObj.error?.message || 'Transcription failed');
+                    }
+
+                    const data = await response.json();
+                    if (data.text) {
+                        // Instantly submit the transcribed query
+                        executeCommand(data.text);
+                    }
+                } catch (err) {
+                    setHistory(h => [...h, { type: 'agent', success: false, message: `Speech-to-text error: ${err.message}` }]);
+                }
+            };
+
+            mediaRecorder.start();
+        } catch (err) {
+            console.error('Mic access denied:', err);
+            setIsRecording(false);
+            setHistory(h => [...h, { type: 'agent', success: false, message: 'Microphone access denied or unavailable.' }]);
+        }
+    };
 
     // Auto-scroll to bottom of history
     useEffect(() => {
         historyEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [history]);
+
+    // Spacebar to toggle recording (push to talk)
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.code === 'Space' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+                toggleRecording();
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [isRecording]);
 
     // Keep the JSON view in sync with the live AOMRegistry
     useEffect(() => {
@@ -70,9 +176,11 @@ export default function AgentDashboard() {
         return unsubscribe;
     }, []);
 
-    const executeCommand = async (e) => {
-        e.preventDefault();
-        const cmd = cmdInput.trim();
+    const executeCommand = async (eOrCmd) => {
+        if (eOrCmd && eOrCmd.preventDefault) eOrCmd.preventDefault();
+
+        const cmdText = typeof eOrCmd === 'string' ? eOrCmd : cmdInput;
+        const cmd = cmdText.trim();
         if (!cmd || isProcessing || !apiKey) return;
 
         setCmdInput('');
@@ -82,7 +190,7 @@ export default function AgentDashboard() {
         try {
             let isTaskCompleted = false;
             let iteration = 0;
-            const MAX_ITER = 10;
+            const MAX_ITER = 20;
 
             // Initialize conversation history with exactly the system prompt and the first user input
             const messages = [
@@ -258,9 +366,20 @@ export default function AgentDashboard() {
                         placeholder="E.g., 'Add the Airpods to my cart'"
                         disabled={isProcessing}
                     />
-                    <button type="submit" disabled={isProcessing || !cmdInput.trim()}>
-                        {isProcessing ? '...' : 'Send'}
-                    </button>
+                    <div className="agent-dashboard__actions">
+                        <button
+                            type="button"
+                            className={`agent-dashboard__mic ${isRecording ? 'recording' : ''}`}
+                            onClick={toggleRecording}
+                            disabled={isProcessing}
+                            title="Speak to Agent"
+                        >
+                            {isRecording ? '⏹' : '🎤'}
+                        </button>
+                        <button type="submit" disabled={isProcessing || !cmdInput.trim()}>
+                            {isProcessing ? '...' : 'Send'}
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
