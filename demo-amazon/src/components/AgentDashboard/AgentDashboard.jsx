@@ -172,8 +172,11 @@ export default function AgentDashboard() {
 
     // Auto-scroll to bottom of history
     useEffect(() => {
-        historyEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [history]);
+        const timeoutId = setTimeout(() => {
+            historyEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }, 50);
+        return () => clearTimeout(timeoutId);
+    }, [history, pendingApproval, isProcessing]);
 
     // Spacebar to toggle recording (push to talk)
     useEffect(() => {

@@ -430,8 +430,9 @@
 
 /* Agent Approval Prompt */
 .agent-approval-prompt {
-    background: rgba(0, 0, 0, 0.03);
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    background: rgba(239, 68, 68, 0.08);
+    /* Light transparent red */
+    border: 1px solid rgba(239, 68, 68, 0.3);
     border-radius: 8px;
     padding: 16px;
     margin: 8px 12px;
@@ -442,7 +443,8 @@
 
 .agent-approval-header {
     font-weight: 500;
-    color: #000000;
+    color: #dc2626;
+    /* Vibrant red */
     margin-bottom: 8px;
     display: flex;
     align-items: center;
