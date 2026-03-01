@@ -99,7 +99,7 @@
     left: 5%;
     right: 5%;
     height: 2px;
-    background: rgba(16, 185, 129, 0.2);
+    background: #000000;
 }
 
 .agent-dashboard__brand {

@@ -377,7 +377,9 @@ export default function AgentDashboard() {
                     targetRef={{ current: null }}
                     isHovered={false}
                     ambientScale={0.8}
-                    particleColor="#34d399"
+                    color1="#10b981"
+                    color2="#059669"
+                    color3="#34d399"
                 />
             </div>
             <div className="agent-dashboard__header">
