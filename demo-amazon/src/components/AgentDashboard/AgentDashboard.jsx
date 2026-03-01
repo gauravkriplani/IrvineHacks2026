@@ -3,6 +3,24 @@ import AOMRegistry from '../../../../aom-wrappers/AOMRegistry';
 import logoImg from '../../assets/logo.webp';
 import './AgentDashboard.css';
 
+function MicIcon() {
+    return (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+            <line x1="12" y1="19" x2="12" y2="22" />
+        </svg>
+    );
+}
+
+function StopIcon() {
+    return (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <rect x="6" y="6" width="12" height="12" rx="2" ry="2" />
+        </svg>
+    );
+}
+
 const PROMPT = `
 You are a deterministic mapping agent for a user interface.
 You will be provided with a user's intent in plain english, and a JSON object representing exactly what interactive elements are currently on the screen.
@@ -416,7 +434,7 @@ export default function AgentDashboard() {
                             disabled={isProcessing}
                             title="Speak to Agent"
                         >
-                            {isRecording ? '⏹' : '🎤'}
+                            {isRecording ? <StopIcon /> : <MicIcon />}
                         </button>
                         <button type="submit" disabled={isProcessing || !cmdInput.trim()}>
                             {isProcessing ? '...' : 'Send'}
