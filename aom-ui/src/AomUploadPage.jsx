@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import logoImg from './public/logo.webp';
 import './HomePage.css';
 import './AomUploadPage.css';
 
@@ -144,10 +145,7 @@ export default function AomUploadPage() {
       {/* Nav */}
       <nav className="hp-nav">
         <Link to="/" className="hp-nav-brand">
-          <svg className="hp-nav-logo" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-            <polygon points="14,2 26,24 2,24" fill="#1a1a1a" />
-            <polygon points="14,7 23,22 11,22" fill="#4285f4" opacity="0.75" />
-          </svg>
+          <img src={logoImg} alt="Agent Native logo" className="hp-nav-logo" />
           Agent Native
         </Link>
         <div className="hp-nav-center">

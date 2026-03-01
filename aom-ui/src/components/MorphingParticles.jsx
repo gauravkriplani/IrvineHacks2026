@@ -84,7 +84,7 @@ const MorphingParticles = ({
             colors[i * 3 + 2] = col.b;
 
             // Smaller size now — elongation handled in shader (Made 3x smaller)
-            sizes[i] = (Math.random() * 16 + 10) / 3;
+            sizes[i] = (Math.random() * 16 + 10) / 2;
 
             // Random rotation per particle for rice-grain orientation
             rotations[i] = Math.random() * Math.PI;
@@ -100,6 +100,9 @@ const MorphingParticles = ({
         geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
         geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
         geometry.setAttribute('rotation', new THREE.BufferAttribute(rotations, 1));
+
+        // Keep a copy of base sizes so we can restore them when cursor moves away
+        const baseSizes = new Float32Array(sizes);
 
         const material = new THREE.PointsMaterial({
             size: 2, // Also decreased base size
@@ -259,6 +262,23 @@ const MorphingParticles = ({
             }
 
             posAttr.needsUpdate = true;
+
+            // Boost particle size near cursor
+            const sizeAttr = particles.geometry.attributes.size;
+            const sizeArray = sizeAttr.array;
+            const mx = mouse.current.x;
+            const my = mouse.current.y;
+            const cursorRadius = 180;
+            for (let i = 0; i < particleCount; i++) {
+                const idx = i * 3;
+                const dx = mx - posArray[idx];
+                const dy = my - posArray[idx + 1];
+                const d = Math.sqrt(dx * dx + dy * dy);
+                const boost = d < cursorRadius ? 1.0 + (1.0 - d / cursorRadius) * 1.0 : 1.0;
+                sizeArray[i] = baseSizes[i] * boost;
+            }
+            sizeAttr.needsUpdate = true;
+
             renderer.render(scene, camera);
         };
 

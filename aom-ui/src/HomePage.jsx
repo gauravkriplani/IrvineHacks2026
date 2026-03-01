@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import MorphingParticles from './components/MorphingParticles';
 import logoImg from './public/logo.webp';
@@ -61,17 +61,18 @@ const DEVTYPES = [
 
 const CAROUSEL_SLIDES = [grad1, grad2, grad3, grad4];
 
-const STATS = [
-  { value: 'WAI-ARIA 1.2', label: 'Fully compliant output' },
-  { value: '< 30s', label: 'Average generation time' },
-  { value: '100%', label: 'Open source, no charge' },
-];
-
 /* ── Component ───────────────────────────────────────────────────────────── */
 export default function HomePage() {
   const [particleMode, setParticleMode] = useState('cursor');
   const ctaRef = useRef(null);
   const [carouselIdx, setCarouselIdx] = useState(0);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 30);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const prevSlide = () => setCarouselIdx(i => (i - 1 + CAROUSEL_SLIDES.length) % CAROUSEL_SLIDES.length);
   const nextSlide = () => setCarouselIdx(i => (i + 1) % CAROUSEL_SLIDES.length);
@@ -87,7 +88,7 @@ export default function HomePage() {
       />
 
       {/* ── Nav ──────────────────────────────────────────────────── */}
-      <nav className="hp-nav">
+      <nav className={`hp-nav${scrolled ? ' hp-nav--island' : ''}`}>
         <Link to="/" className="hp-nav-brand">
           <img src={logoImg} alt="Agent Native logo" className="hp-nav-logo" />
           Agent Native
@@ -203,16 +204,6 @@ export default function HomePage() {
             </div>
           ))}
         </div>
-      </section>
-
-      {/* ── Stats ────────────────────────────────────────────────── */}
-      <section className="hp-stats">
-        {STATS.map(s => (
-          <div className="hp-stat" key={s.label}>
-            <div className="hp-stat-value">{s.value}</div>
-            <div className="hp-stat-label">{s.label}</div>
-          </div>
-        ))}
       </section>
 
       {/* ── CTA band ─────────────────────────────────────────────── */}
