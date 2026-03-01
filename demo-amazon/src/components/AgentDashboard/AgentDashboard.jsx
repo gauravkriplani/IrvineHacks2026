@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import AOMRegistry from '../../../../aom-wrappers/AOMRegistry';
+import logoImg from '../../assets/logo.webp';
 import './AgentDashboard.css';
 
 const PROMPT = `
@@ -354,10 +355,11 @@ export default function AgentDashboard() {
         <div className="agent-dashboard">
             <div className="agent-dashboard__header">
                 <div className="agent-dashboard__brand">
-                    <span className="agent-dashboard__title">agentnative</span>
+                    <img src={logoImg} alt="Agent Native logo" className="agent-dashboard__logo" />
+                    <span className="agent-dashboard__title">Agent Native</span>
                 </div>
                 <div>
-                    <button onClick={() => setCollapsed(true)}>—</button>
+                    <button className="agent-dashboard__close" onClick={() => setCollapsed(true)}>✕</button>
                 </div>
             </div>
 
