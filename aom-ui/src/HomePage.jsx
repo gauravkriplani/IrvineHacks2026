@@ -4,10 +4,6 @@ import MorphingParticles from './components/MorphingParticles';
 import TiltCard from './components/TiltCard';
 import logoImg from './public/logo.webp';
 import greenImg from './public/green.jpeg';
-import grad1 from './public/HomeGradients2/aga-silva-pgoKgrsQr38-unsplash.jpg';
-import grad2 from './public/HomeGradients2/beau-carpenter-eb5N9d5xLKA-unsplash.jpg';
-import grad3 from './public/HomeGradients2/mohammed-kara-vI5Cx3LEZAc-unsplash.jpg';
-import grad4 from './public/HomeGradients2/vurzie-kim-Sp2HQhVbdg0-unsplash.jpg';
 import annotationImg from './public/aleksandr-zaitsev-cRS3WCABL18-unsplash.jpg';
 import llmImg from './public/eugene-golovesov-wkb5BM3vlWY-unsplash.jpg';
 import zipImg from './public/amy-w-YbVCgsg84lA-unsplash.jpg';
@@ -47,28 +43,11 @@ const FEATURES = [
   },
 ];
 
-const DEVTYPES = [
-  {
-    label: 'Frontend developers',
-    desc: 'Drop in AOM wrappers without touching a single aria-* attribute by hand.',
-  },
-  {
-    label: 'Full-stack engineers',
-    desc: 'Annotate entire React codebases in one pass — every component, every prop.',
-  },
-  {
-    label: 'Accessibility auditors',
-    desc: 'Get an AI-assisted head start on WCAG compliance before the manual audit begins.',
-  },
-];
-
-const CAROUSEL_SLIDES = [grad1, grad2, grad3, grad4];
 
 /* ── Component ───────────────────────────────────────────────────────────── */
 export default function HomePage() {
   const [particleMode, setParticleMode] = useState('cursor');
   const ctaRef = useRef(null);
-  const [carouselIdx, setCarouselIdx] = useState(0);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -76,9 +55,6 @@ export default function HomePage() {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
-
-  const prevSlide = () => setCarouselIdx(i => (i - 1 + CAROUSEL_SLIDES.length) % CAROUSEL_SLIDES.length);
-  const nextSlide = () => setCarouselIdx(i => (i + 1) % CAROUSEL_SLIDES.length);
 
   return (
     <div className="hp-shell">
@@ -186,66 +162,15 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Carousel ─────────────────────────────────────────────── */}
-      <section className="hp-carousel-section">
-        <div className="hp-carousel-wrapper">
-          <button className="hp-carousel-arrow hp-carousel-arrow--prev" onClick={prevSlide} aria-label="Previous slide">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg>
-          </button>
-
-          <div className="hp-carousel">
-            <div
-              className="hp-carousel-track"
-              style={{ transform: `translateX(-${carouselIdx * 100}%)` }}
-            >
-              {CAROUSEL_SLIDES.map((src, i) => (
-                <div className="hp-carousel-slide" key={i}>
-                  <img src={src} alt={`Slide ${i + 1}`} className="hp-carousel-img" />
-                </div>
-              ))}
-            </div>
-
-            <div className="hp-carousel-dots">
-              {CAROUSEL_SLIDES.map((_, i) => (
-                <button
-                  key={i}
-                  className={`hp-carousel-dot${i === carouselIdx ? ' hp-carousel-dot--active' : ''}`}
-                  onClick={() => setCarouselIdx(i)}
-                  aria-label={`Go to slide ${i + 1}`}
-                />
-              ))}
-            </div>
-          </div>
-
-          <button className="hp-carousel-arrow hp-carousel-arrow--next" onClick={nextSlide} aria-label="Next slide">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 6 15 12 9 18" /></svg>
-          </button>
-        </div>
-      </section>
-
-      {/* ── Dev types ────────────────────────────────────────────── */}
-      <section className="hp-devs">
-        <h2 className="hp-devs-title">
-          Built for developers<br />
-          <span className="hp-devs-era">for the agent-native era</span>
-        </h2>
-        <div className="hp-devs-grid">
-          {DEVTYPES.map(d => (
-            <div className="hp-dev-card" key={d.label}>
-              <div className="hp-dev-label">{d.label}</div>
-              <div className="hp-dev-desc">{d.desc}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* ── CTA band ─────────────────────────────────────────────── */}
-      <section className="hp-cta-band">
-        <h2 className="hp-cta-title">Achieve new heights</h2>
-        <p className="hp-cta-sub">
-          Make your React app accessible to every agent and user — in minutes.
-        </p>
-        <Link to="/toolkit" className="hp-btn-white">Try the Toolkit</Link>
+      <section className="hp-cta-section">
+        <div className="hp-cta-band">
+          <h2 className="hp-cta-title">Achieve new heights</h2>
+          <p className="hp-cta-sub">
+            Make your React app accessible to every agent and user — in minutes.
+          </p>
+          <Link to="/toolkit" className="hp-btn-white">Try the Toolkit</Link>
+        </div>
       </section>
 
       {/* ── Footer ───────────────────────────────────────────────── */}
