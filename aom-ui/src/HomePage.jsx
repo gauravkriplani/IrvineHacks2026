@@ -163,14 +163,12 @@ export default function HomePage() {
       </section>
 
       {/* ── CTA band ─────────────────────────────────────────────── */}
-      <section className="hp-cta-section">
-        <div className="hp-cta-band">
-          <h2 className="hp-cta-title">Achieve new heights</h2>
-          <p className="hp-cta-sub">
-            Make your React app accessible to every agent and user — in minutes.
-          </p>
-          <Link to="/toolkit" className="hp-btn-white">Try the Toolkit</Link>
-        </div>
+      <section className="hp-cta-band">
+        <h2 className="hp-cta-title">Achieve new heights</h2>
+        <p className="hp-cta-sub">
+          Make your React app accessible to every agent and user — in minutes.
+        </p>
+        <Link to="/toolkit" className="hp-btn-white">Try the Toolkit</Link>
       </section>
 
       {/* ── Footer ───────────────────────────────────────────────── */}
