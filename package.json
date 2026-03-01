@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "postinstall": "npm install --prefix aom-ui",
+    "start": "concurrently --names \"server,ui\" --prefix-colors \"cyan,magenta\" \"npm run start-aom-server\" \"npm run start-aom-ui\"",
     "start-aom-server": "node server/generate-aom-server.js",
     "start-aom-ui": "npm run dev --prefix aom-ui",
     "build-aom-ui": "npm run build --prefix aom-ui",
@@ -12,6 +14,7 @@
     "@babel/parser": "^7.22.11",
     "@babel/traverse": "^7.22.5",
     "archiver": "^5.3.1",
+    "concurrently": "^9.2.1",
     "cors": "^2.8.6",
     "express": "^4.18.2",
     "fs-extra": "^11.1.1",
