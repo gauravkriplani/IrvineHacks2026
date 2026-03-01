@@ -1,43 +1,43 @@
-import { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import logoImg      from './public/logo.webp';
-import maanPhoto    from './public/maanpatel.jpeg';
-import gauravPhoto  from './public/gauravkriplani.png';
-import adityaPhoto  from './public/adityajain.jpeg';
-import justinPhoto  from './public/justinsiek.jpeg';
+import logoImg from './public/logo.webp';
+import maanPhoto from './public/maanpatel.jpeg';
+import gauravPhoto from './public/gauravkriplani.png';
+import adityaPhoto from './public/adityajain.jpeg';
+import justinPhoto from './public/justinsiek.jpeg';
 import './HomePage.css';
 import './TeamsPage.css';
 
 const TEAM = [
   {
-    name:   'Maan Patel',
-    role:   'Student',
+    name: 'Maan Patel',
+    role: 'Student',
     school: 'University of California, Irvine',
-    photo:  maanPhoto,
+    photo: maanPhoto,
     github: 'https://github.com/maanpatel2005',
     linkedin: 'https://www.linkedin.com/in/maanvpatel/',
   },
   {
-    name:   'Gaurav Kriplani',
-    role:   'Student',
+    name: 'Gaurav Kriplani',
+    role: 'Student',
     school: 'University of California, Irvine',
-    photo:  gauravPhoto,
+    photo: gauravPhoto,
     github: 'https://github.com/gauravkriplani',
     linkedin: 'https://www.linkedin.com/in/gaurav-kriplani/',
   },
   {
-    name:   'Aditya Jain',
-    role:   'Student',
+    name: 'Aditya Jain',
+    role: 'Student',
     school: 'University of California, Irvine',
-    photo:  adityaPhoto,
+    photo: adityaPhoto,
     github: 'https://github.com/adityaj0',
     linkedin: 'https://www.linkedin.com/in/aditya-jain0714/',
   },
   {
-    name:   'Justin Siek',
-    role:   'Student',
+    name: 'Justin Siek',
+    role: 'Student',
     school: 'University of California, Irvine',
-    photo:  justinPhoto,
+    photo: justinPhoto,
     github: 'https://github.com/justinsiek',
     linkedin: 'https://www.linkedin.com/in/justin-siek/',
   },
@@ -73,19 +73,11 @@ function LinkedInIcon() {
 }
 
 export default function TeamsPage() {
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 30);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
   return (
     <div className="hp-shell tm-shell">
 
       {/* ── Nav ───────────────────────────────────────────────────── */}
-      <nav className={`hp-nav${scrolled ? ' hp-nav--island' : ''}`}>
+      <nav className="hp-nav">
         <Link to="/" className="hp-nav-brand">
           <img src={logoImg} alt="Agent Native logo" className="hp-nav-logo" />
           Agent Native
@@ -121,7 +113,7 @@ export default function TeamsPage() {
                 <div className="tm-school">{member.school}</div>
                 <p className="tm-bio">{member.bio}</p>
                 <div className="tm-links">
-                  <a href={member.github}  className="tm-icon-link" target="_blank" rel="noreferrer" aria-label="GitHub"><GithubIcon /></a>
+                  <a href={member.github} className="tm-icon-link" target="_blank" rel="noreferrer" aria-label="GitHub"><GithubIcon /></a>
                   <a href={member.linkedin} className="tm-icon-link" target="_blank" rel="noreferrer" aria-label="LinkedIn"><LinkedInIcon /></a>
                 </div>
               </div>

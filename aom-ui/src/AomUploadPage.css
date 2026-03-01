@@ -12,13 +12,14 @@
 /* ── Body ───────────────────────────────────────────────────────────────── */
 .tk-body {
   flex: 1;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 64px 24px 80px;
   background:
     /* ↓ Overlay opacity — raise the 0.65 value toward 1.0 for more white, lower it for more pattern */
-    linear-gradient(rgba(255,255,255,0.65), rgba(255,255,255,0.65)),
+    linear-gradient(rgba(255, 255, 255, 0.65), rgba(255, 255, 255, 0.65)),
     url('./public/magicpattern-87PP9Zd7MNo-unsplash.jpg') center / cover no-repeat;
 }
 
@@ -75,19 +76,19 @@
 
 /* ── Pipe connector ─────────────────────────────────────────────────────── */
 .pl-pipe {
-  flex: 0 0 72px;   /* fixed — never stretches or shrinks */
+  flex: 0 0 72px;
+  /* fixed — never stretches or shrinks */
   width: 72px;
   height: 2px;
   position: relative;
-  background: repeating-linear-gradient(
-    to right,
-    rgba(0, 0, 0, 0.14) 0,
-    rgba(0, 0, 0, 0.14) 5px,
-    transparent 5px,
-    transparent 11px
-  );
+  background: repeating-linear-gradient(to right,
+      rgba(0, 0, 0, 0.14) 0,
+      rgba(0, 0, 0, 0.14) 5px,
+      transparent 5px,
+      transparent 11px);
   background-size: 11px 2px;
 }
+
 .pl-pipe::after {
   content: '';
   position: absolute;
@@ -97,29 +98,37 @@
   border: 5px solid transparent;
   border-left: 8px solid rgba(0, 0, 0, 0.14);
 }
+
 .pl-pipe--active {
-  background: repeating-linear-gradient(
-    to right,
-    #4285f4 0,
-    #4285f4 5px,
-    transparent 5px,
-    transparent 11px
-  );
+  background: repeating-linear-gradient(to right,
+      #4285f4 0,
+      #4285f4 5px,
+      transparent 5px,
+      transparent 11px);
   background-size: 11px 2px;
   animation: pl-flow 0.45s linear infinite;
 }
-.pl-pipe--active::after { border-left-color: #4285f4; }
+
+.pl-pipe--active::after {
+  border-left-color: #4285f4;
+}
 
 @keyframes pl-flow {
-  from { background-position-x: 0; }
-  to   { background-position-x: 11px; }
+  from {
+    background-position-x: 0;
+  }
+
+  to {
+    background-position-x: 11px;
+  }
 }
 
 /* ── Stage group ────────────────────────────────────────────────────────── */
 .pl-stage-group {
   display: flex;
   align-items: center;
-  flex: none;   /* don't grow — keeps all gaps equal */
+  flex: none;
+  /* don't grow — keeps all gaps equal */
 }
 
 /* ── Base node ──────────────────────────────────────────────────────────── */
@@ -146,13 +155,14 @@
 .pl-node--io {
   cursor: pointer;
 }
+
 .pl-node--io:hover:not(.pl-node--muted):not(.pl-node--output-ready) {
   border-color: rgba(0, 0, 0, 0.22);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.09);
 }
 
 /* ── Stage nodes ────────────────────────────────────────────────────────── */
-.pl-node--stage { }
+.pl-node--stage {}
 
 /* ── States ─────────────────────────────────────────────────────────────── */
 .pl-node--muted {
@@ -160,23 +170,28 @@
   cursor: not-allowed;
   pointer-events: none;
 }
+
 .pl-node--drag {
   border-color: #4285f4;
   box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.16);
   background: rgba(66, 133, 244, 0.03);
 }
+
 .pl-node--active {
   border-color: #4285f4;
   box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.13), 0 2px 18px rgba(66, 133, 244, 0.10);
 }
+
 .pl-node--done {
   border-color: rgba(34, 197, 94, 0.32);
   background: rgba(34, 197, 94, 0.025);
 }
+
 .pl-node--error {
   border-color: rgba(239, 68, 68, 0.35);
   background: rgba(239, 68, 68, 0.03);
 }
+
 .pl-node--output-ready {
   opacity: 1;
   cursor: default;
@@ -194,13 +209,18 @@
   color: rgba(26, 26, 26, 0.32);
   margin-bottom: 2px;
 }
+
 .pl-node-icon {
   color: rgba(26, 26, 26, 0.45);
   margin: 2px 0 4px;
   display: flex;
   align-items: center;
 }
-.pl-node--output-ready .pl-node-icon { color: #16a34a; }
+
+.pl-node--output-ready .pl-node-icon {
+  color: #16a34a;
+}
+
 .pl-node-name {
   font-size: 15px;
   font-weight: 700;
@@ -211,6 +231,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 .pl-node-sub {
   font-size: 13px;
   color: rgba(26, 26, 26, 0.42);
@@ -231,17 +252,23 @@
   color: rgba(26, 26, 26, 0.40);
   margin-bottom: 4px;
 }
+
 .pl-node--active .pl-stage-icon {
   border-color: #4285f4;
   background: rgba(66, 133, 244, 0.07);
   color: #4285f4;
 }
+
 .pl-node--done .pl-stage-icon {
   border-color: rgba(34, 197, 94, 0.38);
   background: rgba(34, 197, 94, 0.07);
   color: #16a34a;
 }
-.pl-stage-glyph { font-size: 20px; line-height: 1; }
+
+.pl-stage-glyph {
+  font-size: 20px;
+  line-height: 1;
+}
 
 /* ── Stage spinner ──────────────────────────────────────────────────────── */
 .pl-stage-spinner {
@@ -252,7 +279,12 @@
   border-radius: 50%;
   animation: pl-spin 0.7s linear infinite;
 }
-@keyframes pl-spin { to { transform: rotate(360deg); } }
+
+@keyframes pl-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 
 /* ── Reset button ───────────────────────────────────────────────────────── */
 .pl-reset-btn {
@@ -268,7 +300,10 @@
   transition: opacity 0.15s;
   font-family: inherit;
 }
-.pl-reset-btn:hover { opacity: 0.80; }
+
+.pl-reset-btn:hover {
+  opacity: 0.80;
+}
 
 /* ── Error banner ───────────────────────────────────────────────────────── */
 .pl-error-banner {
@@ -283,6 +318,7 @@
   color: #991b1b;
   text-align: center;
 }
+
 .pl-error-retry {
   background: none;
   border: none;
@@ -303,24 +339,25 @@
     overflow-x: unset;
     padding: 8px 24px 16px;
   }
+
   .pl-stage-group {
     flex-direction: column;
     align-items: center;
   }
+
   /* vertical fixed-height pipe — same as horizontal but rotated */
   .pl-pipe {
     flex: 0 0 40px;
     width: 2px;
     height: 40px;
-    background: repeating-linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.14) 0,
-      rgba(0, 0, 0, 0.14) 5px,
-      transparent 5px,
-      transparent 11px
-    );
+    background: repeating-linear-gradient(to bottom,
+        rgba(0, 0, 0, 0.14) 0,
+        rgba(0, 0, 0, 0.14) 5px,
+        transparent 5px,
+        transparent 11px);
     background-size: 2px 11px;
   }
+
   .pl-pipe::after {
     top: auto;
     bottom: -1px;
@@ -331,24 +368,38 @@
     border-left-color: transparent;
     border-top: 8px solid rgba(0, 0, 0, 0.14);
   }
+
   .pl-pipe--active {
-    background: repeating-linear-gradient(
-      to bottom,
-      #4285f4 0,
-      #4285f4 5px,
-      transparent 5px,
-      transparent 11px
-    );
+    background: repeating-linear-gradient(to bottom,
+        #4285f4 0,
+        #4285f4 5px,
+        transparent 5px,
+        transparent 11px);
     background-size: 2px 11px;
     animation: pl-flow-v 0.45s linear infinite;
   }
-  .pl-pipe--active::after { border-top-color: #4285f4; }
-  @keyframes pl-flow-v {
-    from { background-position-y: 0; }
-    to   { background-position-y: 11px; }
+
+  .pl-pipe--active::after {
+    border-top-color: #4285f4;
   }
+
+  @keyframes pl-flow-v {
+    from {
+      background-position-y: 0;
+    }
+
+    to {
+      background-position-y: 11px;
+    }
+  }
+
   /* all nodes same width on mobile */
   .pl-node--io,
-  .pl-node--stage { width: 200px; }
-  .tk-body { padding: 48px 16px 60px; }
+  .pl-node--stage {
+    width: 200px;
+  }
+
+  .tk-body {
+    padding: 48px 16px 60px;
+  }
 }

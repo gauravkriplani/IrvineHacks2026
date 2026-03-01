@@ -49,12 +49,30 @@ export default function HomePage() {
   const [particleMode, setParticleMode] = useState('cursor');
   const ctaRef = useRef(null);
   const [scrolled, setScrolled] = useState(false);
+  const [isNavVisible, setIsNavVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 30);
+    const onScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      // Still detect if we've left the absolute top to apply island styling
+      setScrolled(currentScrollY > 30);
+
+      if (currentScrollY < lastScrollY) {
+        // Scrolling UP
+        setIsNavVisible(true);
+      } else if (currentScrollY > 100 && currentScrollY > lastScrollY) {
+        // Scrolling DOWN (and past top threshold)
+        setIsNavVisible(false);
+      }
+
+      setLastScrollY(currentScrollY);
+    };
+
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+  }, [lastScrollY]);
 
   return (
     <div className="hp-shell">
@@ -67,7 +85,7 @@ export default function HomePage() {
       />
 
       {/* ── Nav ──────────────────────────────────────────────────── */}
-      <nav className={`hp-nav${scrolled ? ' hp-nav--island' : ''}`}>
+      <nav className={`hp-nav${scrolled ? ' hp-nav--island' : ''}${!isNavVisible ? ' hp-nav--hidden' : ''}`}>
         <Link to="/" className="hp-nav-brand">
           <img src={logoImg} alt="Agent Native logo" className="hp-nav-logo" />
           Agent Native
