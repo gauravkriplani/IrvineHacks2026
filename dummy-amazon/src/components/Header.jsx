@@ -23,7 +23,7 @@ const LocationIcon = () => (
 
 const CATEGORIES = ['All', 'Electronics', 'Books', 'Clothing', 'Home & Kitchen', 'Sports', 'Beauty', 'Toys', 'Grocery'];
 
-export default function Header({ searchQuery, onSearchChange, onCategoryFilter, onViewChange, deliveryAddress, onAddressClick }) {
+export default function Header({ searchQuery, onSearchChange, onCategoryFilter, onViewChange, deliveryAddress, onAddressClick, searchButtonRef }) {
     const { cartCount } = useCart();
     const [searchCat, setSearchCat] = useState('All');
     const [query, setQuery] = useState(searchQuery || '');
@@ -91,7 +91,7 @@ export default function Header({ searchQuery, onSearchChange, onCategoryFilter, 
                         />
                     </AOMInput>
                     <AOMAction id="header.submit_search" description="Submit product search">
-                        <button type="submit" className="amz-search__btn">
+                        <button type="submit" className="amz-search__btn" ref={searchButtonRef}>
                             <SearchIcon />
                         </button>
                     </AOMAction>
