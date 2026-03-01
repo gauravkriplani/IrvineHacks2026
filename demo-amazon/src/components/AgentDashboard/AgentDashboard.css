@@ -19,20 +19,14 @@
 }
 
 .agent-dashboard-toggle__logo {
-    width: 32px;
-    height: 32px;
-    object-fit: cover;
-    object-position: 100% 0%;
-    /* Focus on top-right to avoid the bottom-left black triangle */
-    transform: scale(1.5);
-    /* Zoom in to crop */
-    filter: invert(1) brightness(1.2);
-    /* Make it white/bright so it's visible on dark bg */
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
     transition: transform 0.3s ease;
 }
 
 .agent-dashboard-toggle:hover .agent-dashboard-toggle__logo {
-    transform: scale(1.7) rotate(5deg);
+    transform: scale(1.1) rotate(5deg);
 }
 
 .agent-dashboard-toggle:hover {
@@ -128,13 +122,9 @@
 
 .agent-dashboard__logo {
     height: 32px;
-    width: 32px;
-    object-fit: cover;
-    object-position: 100% 0%;
-    transform: scale(1.5);
+    width: auto;
+    object-fit: contain;
     display: block;
-    margin-right: 4px;
-    /* Space from title */
 }
 
 .agent-dashboard__title {
