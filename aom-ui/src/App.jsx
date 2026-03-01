@@ -7,15 +7,30 @@ import TeamsPage from './TeamsPage.jsx';
 function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => {
-    // Temporarily remove smooth scrolling so the jump to top is instant 
-    // and not intercepted by the CSS snap engine
+    // 1. Instantly block natural scrolling logic
     document.documentElement.style.scrollBehavior = 'auto';
+    document.body.style.overflow = 'hidden';
+
+    // 2. Initial attempt to jump
     window.scrollTo(0, 0);
 
-    // Restore behavior after the paint
+    // 3. Wait for React to finish rendering the new DOM, then try again
     requestAnimationFrame(() => {
-      document.documentElement.style.scrollBehavior = '';
+      window.scrollTo(0, 0);
+      requestAnimationFrame(() => {
+        window.scrollTo(0, 0);
+        // 4. Restore organic scrolling behavior
+        document.body.style.overflow = '';
+        document.documentElement.style.scrollBehavior = '';
+      });
     });
+
+    // 5. Hard fallback just in case the payload is super heavy
+    const timeoutId = setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 50);
+
+    return () => clearTimeout(timeoutId);
   }, [pathname]);
   return null;
 }
