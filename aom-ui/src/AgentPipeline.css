@@ -1,0 +1,381 @@
+:root {
+    --text-primary: #111111;
+    --text-secondary: #555555;
+    --text-tertiary: #888888;
+
+    --accent-color: #1a73e8;
+    --success-color: #34a853;
+
+    --font-hero: "Google Sans Display", "Inter", -apple-system, sans-serif;
+    --font-body: "Google Sans", "Inter", -apple-system, sans-serif;
+
+    --pipeline-gap: 80px;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-body);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    background: #f4f5f7;
+}
+
+.ap-layout {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow-x: hidden;
+    transition: background 0.8s ease;
+}
+
+/* Header */
+.ap-header {
+    padding: 1.5rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 50;
+}
+
+.ap-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 500;
+    font-size: 1.25rem;
+    letter-spacing: -0.02em;
+}
+
+.ap-nav {
+    display: flex;
+    gap: 2rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.ap-nav span {
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.ap-nav span:hover {
+    color: var(--text-primary);
+}
+
+/* Hero Landing Stage */
+.ap-hero-landing {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 2rem;
+    z-index: 10;
+}
+
+.ap-hero h1 {
+    font-family: var(--font-hero);
+    font-size: clamp(3rem, 6vw, 5rem);
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    margin: 0 0 1.5rem;
+    max-width: 900px;
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ap-hero p {
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+    max-width: 650px;
+    line-height: 1.4;
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ap-hero-mini {
+    padding: 2vh 2rem 0;
+    flex: 0;
+}
+
+.ap-hero-mini h1 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.ap-hero-mini p {
+    font-size: 1.125rem;
+}
+
+/* Magic Particle Button */
+.ap-enter-container {
+    margin-top: 4rem;
+    display: flex;
+    justify-content: center;
+}
+
+.ap-pill-hitbox {
+    width: 220px;
+    height: 60px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--text-primary);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    /* Very subtle so you know where it is, but particles form the real shape */
+    background: rgba(255, 255, 255, 0.01);
+    transition: all 0.3s ease;
+    user-select: none;
+}
+
+.ap-pill-hitbox:hover {
+    background: rgba(255, 255, 255, 0.4);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Technical Pipeline Stage */
+.ap-main-content {
+    flex: 1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 2rem;
+    z-index: 10;
+    animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ap-pipeline-container {
+    width: 100%;
+    max-width: 1000px;
+    margin-top: 2rem;
+}
+
+.ap-pipeline-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ap-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 180px;
+}
+
+.ap-node-circle {
+    width: 100px;
+    height: 100px;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.ap-node-circle.active-particle {
+    border-color: rgba(0, 0, 0, 0.02);
+    background: rgba(255, 255, 255, 0.01);
+}
+
+.ap-node-circle:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.ap-node-circle.active {
+    border-color: var(--accent-color);
+}
+
+.ap-node-circle.success {
+    border-color: var(--success-color);
+}
+
+.ap-node-icon {
+    width: 32px;
+    height: 32px;
+    color: var(--text-secondary);
+}
+
+.ap-node-circle.active .ap-node-icon {
+    color: var(--accent-color);
+}
+
+.ap-node-circle.success .ap-node-icon {
+    color: var(--success-color);
+}
+
+.ap-node-label {
+    margin-top: 1rem;
+    font-weight: 500;
+}
+
+.ap-node-status {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+/* Pipe Connectors */
+.ap-pipe-line {
+    flex: 1;
+    max-width: var(--pipeline-gap);
+    height: 2px;
+    background: #e0e0e0;
+    margin: 0 10px;
+    position: relative;
+}
+
+.ap-pipe-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%;
+    background: var(--accent-color);
+    transition: width 0.5s ease;
+}
+
+.ap-pipe-progress.complete {
+    width: 100%;
+    background: var(--success-color);
+}
+
+.ap-pipe-progress.loading {
+    width: 100%;
+    animation: flowPipe 1.5s infinite;
+}
+
+@keyframes flowPipe {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* Global Status Area */
+.ap-global-status {
+    margin-top: 4rem;
+    text-align: center;
+}
+
+.ap-status-title {
+    font-weight: 500;
+    font-size: 1.125rem;
+    margin-bottom: 0.25rem;
+}
+
+.ap-status-sub {
+    color: var(--text-tertiary);
+}
+
+/* Animations */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.ap-started {
+    background: #ffffff;
+}
+
+.ap-fade-in {
+    animation: fadeIn 0.8s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Spinner */
+.ap-ring-loader {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid var(--accent-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Backdrop Blur helpers (since we aren't using Tailwind) */
+.backdrop-blur-md {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.shadow-xl {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.rounded-3xl {
+    border-radius: 1.5rem;
+}
+
+.bg-white\/40 {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+.border-white\/60 {
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+    .ap-pipeline-flow {
+        flex-direction: column;
+        gap: 3rem;
+    }
+
+    .ap-pipe-line {
+        width: 2px;
+        height: 40px;
+        max-width: 2px;
+        margin: 10px 0;
+    }
+
+    .ap-nav {
+        display: none;
+    }
+
+    .ap-header {
+        padding: 1.5rem;
+    }
+}
